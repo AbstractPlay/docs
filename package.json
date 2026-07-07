@@ -1,0 +1,29 @@
+{
+  "name": "@abstractplay/docs",
+  "version": "0.1.0",
+  "description": "Abstract Play developer documentation site",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AbstractPlay/docs.git"
+  },
+  "scripts": {
+    "docs:check": "node scripts/docs-check.js",
+    "docs:generate": "node scripts/generate-schema-ref.js && node scripts/generate-helper-examples.js",
+    "extract-samples": "node scripts/extract-playground-samples.js",
+    "prebuild": "node scripts/prebuild.js",
+    "build": "npm run docs:check && npm run prebuild && eleventy",
+    "serve": "npm run prebuild && eleventy --serve",
+    "deploy:dev": "npm run build && npx serverless client deploy --stage dev --no-confirm",
+    "deploy:prod": "npm run build && npx serverless client deploy --stage prod --no-confirm"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "markdown-it": "^14.1.0",
+    "serverless": "^3.38.0",
+    "serverless-finch": "^4.0.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

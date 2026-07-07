@@ -1,0 +1,40 @@
+service: abstractplay-docs
+
+frameworkVersion: "3"
+
+plugins:
+  - serverless-finch
+
+params:
+  dev:
+    profile: AbstractPlayDev
+    bucket: docs.dev.abstractplay.com
+  prod:
+    profile: AbstractPlayProd
+    bucket: docs.abstractplay.com
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${opt:stage, 'dev'}
+  region: us-east-1
+  profile: ${param:profile}
+
+custom:
+  client:
+    bucketName: ${param:bucket}
+    distributionFolder: ./dist
+    indexDocument: index.html
+    objectHeaders:
+      "assets/**":
+        - name: Cache-Control
+          value: "public, max-age=31536000, immutable"
+      "renderer/samples/**":
+        - name: Cache-Control
+          value: "public, max-age=31536000, immutable"
+      "index.html":
+        - name: Cache-Control
+          value: "no-cache, no-store, must-revalidate"
+      "**/*.html":
+        - name: Cache-Control
+          value: "no-cache, no-store, must-revalidate"

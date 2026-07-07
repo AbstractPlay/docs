@@ -1,0 +1,53 @@
+name: Deploy Docs Dev
+
+on:
+  push:
+    branches: [develop]
+  repository_dispatch:
+    types: [dep_update_dev]
+  workflow_dispatch:
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+          submodules: recursive
+
+      - name: Update submodules
+        run: git submodule update --init --remote
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: npm
+
+      - name: Configure npm for GitHub Packages
+        run: |
+          echo "@abstractplay:registry=https://npm.pkg.github.com/" >> .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.PAT_READ_PACKAGES }}" >> .npmrc
+
+      - run: npm ci
+      - run: npm run build
+        env:
+          DOCS_CHECK_WARN: "0"
+
+      - name: Configure AWS credentials
+        uses: Fooji/create-aws-profile-action@v1
+        with:
+          profile: AbstractPlayDev
+          region: us-east-1
+          key: ${{ secrets.AWS_KEY }}
+          secret: ${{ secrets.AWS_SECRET }}
+
+      - name: Deploy to S3
+        run: npx serverless client deploy --stage dev --no-confirm
+
+      - name: CloudFront invalidation
+        if: ${{ secrets.DOCS_CF_DIST_DEV != '' }}
+        uses: josemando/aws-cloudfront-create-invalidation@v1
+        with:
+          distribution-id: ${{ secrets.DOCS_CF_DIST_DEV }}
+          paths: "/*"

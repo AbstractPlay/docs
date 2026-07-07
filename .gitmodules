@@ -1,0 +1,8 @@
+[submodule "vendor/renderer"]
+	path = vendor/renderer
+	url = https://github.com/AbstractPlay/renderer.git
+	branch = develop
+[submodule "vendor/gameslib"]
+	path = vendor/gameslib
+	url = https://github.com/AbstractPlay/gameslib.git
+	branch = develop

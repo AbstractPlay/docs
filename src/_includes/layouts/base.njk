@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if title %}{{ title }} — {% endif %}Abstract Play Docs</title>
+  <link rel="stylesheet" href="/assets/css/site.css">
+  {% if useRenderWidget %}
+  <script src="/assets/js/APRender.min.js"></script>
+  <script src="/assets/js/render-widget.js"></script>
+  {% endif %}
+</head>
+<body>
+  {% include "partials/header.njk" %}
+  <div class="layout">
+    {% include "partials/nav.njk" %}
+    <main class="content">
+      {{ content | safe }}
+    </main>
+  </div>
+  {% include "partials/footer.njk" %}
+</body>
+</html>

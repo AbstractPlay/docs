@@ -1,0 +1,36 @@
+[
+  {
+    "title": "Home",
+    "url": "/"
+  },
+  {
+    "title": "Renderer",
+    "url": "/renderer/",
+    "children": [
+      { "title": "Overview", "url": "/renderer/" },
+      { "title": "Concepts", "url": "/renderer/concepts/" },
+      { "title": "Glyphs", "url": "/renderer/glyphs/" },
+      { "title": "Boards", "url": "/renderer/boards/" },
+      { "title": "Formatting", "url": "/renderer/formatting/" },
+      { "title": "Markers", "url": "/renderer/markers/" },
+      { "title": "Annotations", "url": "/renderer/annotations/" },
+      { "title": "Engines", "url": "/renderer/engines/" },
+      { "title": "Schema reference", "url": "/renderer/schema-reference/" }
+    ]
+  },
+  {
+    "title": "Gameslib",
+    "url": "/gameslib/",
+    "children": [
+      { "title": "Overview", "url": "/gameslib/" },
+      { "title": "API", "url": "/gameslib/api/" },
+      { "title": "Creating games", "url": "/gameslib/creating-games/" },
+      { "title": "Game object", "url": "/gameslib/game-object/" },
+      { "title": "Flags", "url": "/gameslib/flags/" },
+      { "title": "Helpers", "url": "/gameslib/helpers/" },
+      { "title": "i18n", "url": "/gameslib/i18n/" },
+      { "title": "Testing", "url": "/gameslib/testing/" },
+      { "title": "Examples by feature", "url": "/gameslib/examples/by-feature/" }
+    ]
+  }
+]

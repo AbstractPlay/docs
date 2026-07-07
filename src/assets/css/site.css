@@ -1,0 +1,235 @@
+:root {
+  --bg: #fafafa;
+  --surface: #fff;
+  --text: #1a1a1a;
+  --muted: #555;
+  --border: #ddd;
+  --accent: #1f78b4;
+  --accent-hover: #155a87;
+  --code-bg: #f4f4f4;
+  --nav-width: 240px;
+  --error: #c62828;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+a { color: var(--accent); }
+a:hover { color: var(--accent-hover); }
+
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+}
+
+.site-logo {
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.layout {
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: calc(100vh - 120px);
+}
+
+.site-nav {
+  width: var(--nav-width);
+  flex-shrink: 0;
+  padding: 1rem;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.site-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-nav > ul > li { margin-bottom: 0.5rem; }
+
+.site-nav a {
+  display: block;
+  padding: 0.25rem 0.5rem;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.site-nav a.active {
+  background: var(--code-bg);
+  font-weight: 600;
+}
+
+.subnav {
+  margin-top: 0.25rem;
+  margin-left: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.content {
+  flex: 1;
+  padding: 1.5rem 2rem;
+  max-width: 900px;
+}
+
+.content h1 { margin-top: 0; }
+.content h2 { margin-top: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
+
+pre, code {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+pre {
+  background: var(--code-bg);
+  padding: 1rem;
+  overflow-x: auto;
+  border-radius: 6px;
+}
+
+:not(pre) > code {
+  background: var(--code-bg);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+.doc-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.doc-card {
+  display: block;
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s;
+}
+
+.doc-card:hover {
+  border-color: var(--accent);
+}
+
+.doc-card h2 { margin: 0 0 0.5rem; border: none; color: var(--accent); }
+
+.site-footer {
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  border-top: 1px solid var(--border);
+}
+
+/* Render widget */
+.render-widget {
+  margin: 1.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.render-widget-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 320px;
+}
+
+@media (max-width: 768px) {
+  .layout { flex-direction: column; }
+  .site-nav { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  .render-widget-panels { grid-template-columns: 1fr; }
+}
+
+.render-widget-editor {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+}
+
+.render-widget-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--code-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.rw-btn {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.rw-btn:hover { background: var(--bg); }
+
+.render-widget-json {
+  flex: 1;
+  min-height: 280px;
+  padding: 0.75rem;
+  border: none;
+  resize: vertical;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.render-widget-error {
+  padding: 0.5rem 0.75rem;
+  color: var(--error);
+  font-size: 0.85rem;
+  background: #ffebee;
+}
+
+.render-widget-preview {
+  padding: 1rem;
+  overflow: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.render-widget-svg svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.schema-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.schema-table th, .schema-table td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+
+.schema-table th { background: var(--code-bg); }
+
+.example-games {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
