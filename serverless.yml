@@ -24,6 +24,7 @@ custom:
   client:
     bucketName: ${param:bucket}
     distributionFolder: ./dist
+    manageResources: false
     indexDocument: index.html
     objectHeaders:
       "assets/**":

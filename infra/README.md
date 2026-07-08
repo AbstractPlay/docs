@@ -55,4 +55,4 @@ npm run deploy:dev   # develop branch / dev bucket
 npm run deploy:prod  # main branch / prod bucket
 ```
 
-serverless-finch syncs `./dist` to the bucket configured in `serverless.yml`.
+serverless-finch syncs `./dist` to the bucket configured in `serverless.yml` (`manageResources: false` — bucket policy and CloudFront are managed by CloudFormation).
