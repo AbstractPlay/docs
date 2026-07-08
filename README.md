@@ -29,6 +29,10 @@ Runs `docs:check`, syncs vendor docs, generates schema reference pages, copies `
 
 See [infra/README.md](infra/README.md).
 
+## CI
+
+Deploy workflows listen for `repository_dispatch` from renderer and gameslib (`dep_update_dev` / `dep_update_prod`). Each run fetches the latest `develop` or `main` tip from both vendor submodules before building.
+
 ## Contributing
 
 Documentation content lives in each repository's `/docs` folder. Update renderer or gameslib docs there; this repo aggregates via submodules.

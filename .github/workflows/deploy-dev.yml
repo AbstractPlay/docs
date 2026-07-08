@@ -19,8 +19,14 @@ jobs:
           submodules: recursive
           token: ${{ secrets.PAT_READ_PACKAGES }}
 
-      - name: Update submodules
-        run: git submodule update --init --remote
+      - name: Update submodules to latest branch tip
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --recursive
+          for path in vendor/renderer vendor/gameslib; do
+            git -C "$path" fetch --depth=1 origin develop
+            git -C "$path" checkout FETCH_HEAD
+          done
 
       - uses: actions/setup-node@v4
         with:
