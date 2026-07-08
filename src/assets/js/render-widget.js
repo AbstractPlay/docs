@@ -10,6 +10,7 @@
     const svgHost = el.querySelector(".render-widget-svg");
     const errorEl = el.querySelector(".render-widget-error");
     const defaultJson = decodeHtml(el.getAttribute("data-default") || "{}");
+    const prefix = el.id ? el.id + "-" : "rw-" + Math.random().toString(36).slice(2, 10) + "-";
     let debounceTimer;
 
     function showError(msg) {
@@ -22,6 +23,10 @@
         showError("APRender library not loaded.");
         return;
       }
+      if (typeof APRender.renderStatic !== "function") {
+        showError("APRender.renderStatic not available.");
+        return;
+      }
       let data;
       try {
         data = JSON.parse(textarea.value);
@@ -31,12 +36,8 @@
         return;
       }
       svgHost.innerHTML = "";
-      const divid = "svg-" + Math.random().toString(36).slice(2, 10);
-      const container = document.createElement("div");
-      container.id = divid;
-      svgHost.appendChild(container);
       try {
-        APRender.render(data, { divid: divid });
+        svgHost.innerHTML = APRender.renderStatic(data, { prefix: prefix });
       } catch (e) {
         showError("Render error: " + e.message);
       }
