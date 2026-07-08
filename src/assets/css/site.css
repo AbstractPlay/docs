@@ -1,14 +1,31 @@
+/* Abstract Play brand colours (from front/src/index.css) */
 :root {
-  --bg: #fafafa;
+  --bg: #fff;
   --surface: #fff;
-  --text: #1a1a1a;
-  --muted: #555;
+  --text: #000;
+  --muted: #333;
   --border: #ddd;
-  --accent: #1f78b4;
-  --accent-hover: #155a87;
-  --code-bg: #f4f4f4;
+  --brand: #1a3e6f;
+  --brand-accent: #ff6633;
+  --accent: #008ca8;
+  --accent-hover: #009fbf;
+  --highlight-bg: #eefcff;
+  --code-bg: #f5f5f5;
   --nav-width: 240px;
   --error: #c62828;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #222;
+    --surface: #222;
+    --text: #e6f2f2;
+    --muted: #c3d6f1;
+    --border: #444;
+    --brand: #009fbf;
+    --highlight-bg: #333;
+    --code-bg: #444;
+  }
 }
 
 * { box-sizing: border-box; }
@@ -26,14 +43,38 @@ a:hover { color: var(--accent-hover); }
 
 .site-header {
   background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--brand);
   padding: 0.75rem 1.5rem;
 }
 
 .site-logo {
-  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
   text-decoration: none;
   color: var(--text);
+}
+
+.site-logo-img {
+  height: 2.25rem;
+  width: auto;
+}
+
+.site-logo-img--dark { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  .site-logo-img--light { display: none; }
+  .site-logo-img--dark { display: block; }
+}
+
+.site-logo-docs {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--brand-accent);
+  border-left: 1px solid var(--border);
+  padding-left: 0.75rem;
 }
 
 .layout {
@@ -64,10 +105,17 @@ a:hover { color: var(--accent-hover); }
   padding: 0.25rem 0.5rem;
   text-decoration: none;
   border-radius: 4px;
+  color: var(--text);
+}
+
+.site-nav a:hover {
+  background: var(--highlight-bg);
+  color: var(--accent);
 }
 
 .site-nav a.active {
-  background: var(--code-bg);
+  background: var(--highlight-bg);
+  color: var(--brand);
   font-weight: 600;
 }
 
@@ -83,8 +131,17 @@ a:hover { color: var(--accent-hover); }
   max-width: 900px;
 }
 
-.content h1 { margin-top: 0; }
-.content h2 { margin-top: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
+.content h1 {
+  margin-top: 0;
+  color: var(--brand);
+}
+
+.content h2 {
+  margin-top: 2rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.25rem;
+  color: var(--brand);
+}
 
 pre, code {
   font-family: ui-monospace, Consolas, monospace;
@@ -119,14 +176,19 @@ pre {
   border-radius: 8px;
   text-decoration: none;
   color: inherit;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .doc-card:hover {
   border-color: var(--accent);
+  box-shadow: 0 2px 8px rgba(10, 10, 10, 0.08);
 }
 
-.doc-card h2 { margin: 0 0 0.5rem; border: none; color: var(--accent); }
+.doc-card h2 {
+  margin: 0 0 0.5rem;
+  border: none;
+  color: var(--accent);
+}
 
 .site-footer {
   text-align: center;
@@ -175,12 +237,17 @@ pre {
   padding: 0.25rem 0.75rem;
   font-size: 0.85rem;
   cursor: pointer;
-  border: 1px solid var(--border);
+  border: 1px solid var(--brand);
   border-radius: 4px;
   background: var(--surface);
+  color: var(--brand);
 }
 
-.rw-btn:hover { background: var(--bg); }
+.rw-btn:hover {
+  background: var(--highlight-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
 
 .render-widget-json {
   flex: 1;
@@ -191,6 +258,8 @@ pre {
   font-family: ui-monospace, Consolas, monospace;
   font-size: 0.8rem;
   line-height: 1.4;
+  background: var(--surface);
+  color: var(--text);
 }
 
 .render-widget-error {
@@ -206,6 +275,7 @@ pre {
   display: flex;
   align-items: flex-start;
   justify-content: center;
+  background: var(--highlight-bg);
 }
 
 .render-widget-svg svg {
@@ -226,7 +296,10 @@ pre {
   text-align: left;
 }
 
-.schema-table th { background: var(--code-bg); }
+.schema-table th {
+  background: var(--code-bg);
+  color: var(--brand);
+}
 
 .example-games {
   margin-top: 2rem;
