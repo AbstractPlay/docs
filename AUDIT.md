@@ -22,7 +22,7 @@ Initial migration audit (develop branch). Authoritative sources win over prose.
 |------|--------|
 | `api.md` | Refactored; authoring moved to dedicated pages |
 | `new-game-template.ts` | Moved to `docs/templates/` |
-| `GameBase` manifest | `game-object.md` yaml manifest for docs-check |
+| `GameBase` manifest | `docs/_game-object-manifest.yaml` for docs-check (unpublished) |
 | `gameinfo` flags | Generated enum in `flags.md` |
 | `src/common/` helpers | New `helpers/*.md` pages with exemplar games |
 | Example index | `helpers/_examples.json` + `examples/by-feature.md` auto-generated |

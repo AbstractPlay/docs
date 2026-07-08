@@ -99,21 +99,19 @@ function checkRendererSchema() {
 
 function checkGameBaseManifest() {
   const basePath = path.join(resolveRepo("gameslib"), "src", "games", "_base.ts");
-  const docPath = path.join(resolveRepo("gameslib"), "docs", "game-object.md");
-  if (!fs.existsSync(basePath) || !fs.existsSync(docPath)) return;
-
-  const base = fs.readFileSync(basePath, "utf8");
-  const doc = fs.readFileSync(docPath, "utf8");
-  const abstractMethods = [...base.matchAll(/public abstract (\w+)\(/g)].map((m) => m[1]);
-  const manifestMatch = doc.match(/```yaml manifest\r?\n([\s\S]*?)```/);
-  if (!manifestMatch) {
-    warn("game-object.md missing yaml manifest block");
+  const manifestPath = path.join(resolveRepo("gameslib"), "docs", "_game-object-manifest.yaml");
+  if (!fs.existsSync(basePath)) return;
+  if (!fs.existsSync(manifestPath)) {
+    warn("docs/_game-object-manifest.yaml missing");
     return;
   }
-  const manifest = manifestMatch[1];
+
+  const base = fs.readFileSync(basePath, "utf8");
+  const manifest = fs.readFileSync(manifestPath, "utf8");
+  const abstractMethods = [...base.matchAll(/public abstract (\w+)\(/g)].map((m) => m[1]);
   for (const method of abstractMethods) {
     if (!manifest.includes(method)) {
-      fail(`GameBase method '${method}' not in game-object.md manifest`);
+      fail(`GameBase method '${method}' not in _game-object-manifest.yaml`);
     }
   }
 }
