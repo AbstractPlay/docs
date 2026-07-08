@@ -309,7 +309,6 @@ pre {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  background: var(--highlight-bg);
 }
 
 .render-widget-svg svg {

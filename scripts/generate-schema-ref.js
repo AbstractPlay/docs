@@ -23,6 +23,39 @@ function mdTable(headers, rows) {
   return lines.join("\n");
 }
 
+const RENDERER_OPTION_DESCRIPTIONS = {
+  "hide-labels":
+    "Hides all external row and column labels around the board.",
+  "hide-labels-half":
+    "On boards with labels on every side (e.g. `squares*`), hides only the top and right labels.",
+  "hide-star-points":
+    "On square `vertex` boards, hides the decorative star points.",
+  "no-border":
+    "Hides the outer border line on square-based boards.",
+  "hw-light":
+    "Homeworlds: swaps background and contrast colours for a lighter theme.",
+  "hw-no-buttons":
+    "Homeworlds: hides the sacrifice, pass, and other action buttons.",
+  "hw-system-only":
+    "Homeworlds: renders only the first star system and skips the full layout.",
+  "clickable-edges":
+    "On `squares*` and rect-of-hex boards, makes individual cell edges clickable.",
+  "reverse-letters":
+    "Reverses the order of letter labels (columns or rows, depending on board).",
+  "reverse-numbers":
+    "Reverses the order of numeric labels.",
+  "swap-labels":
+    "Swaps which axis uses letter labels and which uses numeric labels.",
+  "no-piece-click":
+    "Disables click targets on pieces; only board cells receive clicks.",
+  "no-piece-shadow":
+    "Isometric: disables contact shadows drawn under pieces.",
+  "no-iso-depth-shade":
+    "Isometric: disables height-based shading on cells.",
+  "no-iso-cell-footprint":
+    "Isometric: disables the ground footprint drawn under elevated cells.",
+};
+
 function generateRendererSchemaRef() {
   const schemaPath = path.join(resolveRepo("renderer"), "src", "schemas", "schema.json");
   if (!fs.existsSync(schemaPath)) {
@@ -61,7 +94,7 @@ ${mdTable(["Property", "Required", "Description"], [
   ["legend", "no", schema.properties?.legend?.description || "Glyph legend"],
   ["areas", "no", schema.properties?.areas?.description || "Side panel areas"],
   ["annotations", "no", schema.properties?.annotations?.description || "Move annotations"],
-  ["options", "no", schema.properties?.options?.description || "Renderer flags"],
+  ["options", "no", "Optional list of renderer flags. See [Renderer options](#options) below."],
 ])}
 
 ## Renderer engines <span id="engines"></span>
@@ -74,7 +107,10 @@ ${mdTable(["Style"], boardStyles.map((s) => [`\`${s}\``]))}
 
 ## Renderer options <span id="options"></span>
 
-${mdTable(["Option"], options.map((o) => [`\`${o}\``]))}
+${mdTable(
+  ["Option", "Description"],
+  options.map((o) => [`\`${o}\``, RENDERER_OPTION_DESCRIPTIONS[o] || ""])
+)}
 
 `;
 

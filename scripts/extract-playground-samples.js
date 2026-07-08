@@ -1,34 +1,36 @@
 #!/usr/bin/env node
 /**
- * Extract samples object from renderer/test/playground.html
+ * Extract samples object from renderer/test/playground.js (or legacy playground.html)
  */
 const fs = require("fs");
 const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
-const VENDOR_RENDERER = fs.existsSync(path.join(ROOT, "vendor", "renderer", "test", "playground.html"))
+const VENDOR_RENDERER = fs.existsSync(path.join(ROOT, "vendor", "renderer", "test", "playground.js"))
   ? path.join(ROOT, "vendor", "renderer")
   : path.join(ROOT, "..", "renderer");
 
-const playgroundPath = path.join(VENDOR_RENDERER, "test", "playground.html");
+const playgroundJs = path.join(VENDOR_RENDERER, "test", "playground.js");
+const playgroundHtml = path.join(VENDOR_RENDERER, "test", "playground.html");
+const playgroundPath = fs.existsSync(playgroundJs) ? playgroundJs : playgroundHtml;
 const outCatalog = path.join(ROOT, "src", "_data", "renderer-samples.json");
 const outSamplesDir = path.join(VENDOR_RENDERER, "docs", "samples");
 
 if (!fs.existsSync(playgroundPath)) {
-  console.error("playground.html not found at", playgroundPath);
+  console.error("playground.js / playground.html not found under", VENDOR_RENDERER, "test");
   process.exit(1);
 }
 
-const html = fs.readFileSync(playgroundPath, "utf8");
+const source = fs.readFileSync(playgroundPath, "utf8");
 const startMarker = "var samples = ";
-const startIdx = html.indexOf(startMarker);
+const startIdx = source.indexOf(startMarker);
 if (startIdx === -1) {
-  console.error("samples object not found in playground.html");
+  console.error("samples object not found in", path.basename(playgroundPath));
   process.exit(1);
 }
 let i = startIdx + startMarker.length;
-while (html[i] === " ") i++;
-if (html[i] !== "{") {
+while (source[i] === " ") i++;
+if (source[i] !== "{") {
   console.error("Expected { after var samples =");
   process.exit(1);
 }
@@ -37,8 +39,8 @@ let inString = false;
 let stringChar = "";
 let escape = false;
 let endIdx = i;
-for (; endIdx < html.length; endIdx++) {
-  const c = html[endIdx];
+for (; endIdx < source.length; endIdx++) {
+  const c = source[endIdx];
   if (inString) {
     if (escape) {
       escape = false;
@@ -65,7 +67,7 @@ for (; endIdx < html.length; endIdx++) {
     }
   }
 }
-const samplesExpr = html.slice(i, endIdx);
+const samplesExpr = source.slice(i, endIdx);
 
 let samples;
 try {
