@@ -78,7 +78,7 @@ const sorted = Object.keys(map).sort();
 for (const helper of sorted) {
   const games = map[helper]
     .slice(0, 8)
-    .map((g) => `[${g}](https://github.com/AbstractPlay/gameslib/blob/develop/src/games/${g}.ts)`)
+    .map((g) => `[${g}](https://play.abstractplay.com/games/${g})`)
     .join(", ");
   const more = map[helper].length > 8 ? ` (+${map[helper].length - 8} more)` : "";
   lines.push(`| \`${helper}\` | ${games}${more} |`);

@@ -138,13 +138,13 @@ function checkCitedGames() {
   const helpersDir = path.join(resolveRepo("gameslib"), "docs", "helpers");
   if (!fs.existsSync(helpersDir)) return;
   const gamesDir = path.join(resolveRepo("gameslib"), "src", "games");
-  const re = /games\/([a-z0-9_-]+)\.ts/g;
+  const re = /(?:games\/([a-z0-9_-]+)\.ts|play\.abstractplay\.com\/games\/([a-z0-9_-]+))/g;
   for (const file of fs.readdirSync(helpersDir)) {
     if (!file.endsWith(".md")) continue;
     const content = fs.readFileSync(path.join(helpersDir, file), "utf8");
     let m;
     while ((m = re.exec(content)) !== null) {
-      const uid = m[1];
+      const uid = m[1] || m[2];
       if (!fs.existsSync(path.join(gamesDir, `${uid}.ts`))) {
         fail(`Cited game '${uid}' in helpers/${file} does not exist`);
       }
