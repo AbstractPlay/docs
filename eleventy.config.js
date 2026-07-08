@@ -24,6 +24,7 @@ function renderWidgetHtml(samplePath) {
       <div class="render-widget-toolbar">
         <button type="button" class="rw-btn rw-prettify">Prettify</button>
         <button type="button" class="rw-btn rw-reset">Reset</button>
+        <button type="button" class="rw-btn rw-playground">Open in playground</button>
       </div>
       <textarea class="render-widget-json" spellcheck="false">${escaped}</textarea>
       <div class="render-widget-error" hidden></div>

@@ -1,4 +1,17 @@
 (function () {
+  const PLAYGROUND_ORIGIN = "https://renderer.dev.abstractplay.com";
+
+  function encodeBase64Url(str) {
+    return btoa(unescape(encodeURIComponent(str)))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+  }
+
+  function playgroundUrl(json) {
+    return PLAYGROUND_ORIGIN + "/?json=" + encodeBase64Url(json);
+  }
+
   function renderWidget(el) {
     const textarea = el.querySelector(".render-widget-json");
     const svgHost = el.querySelector(".render-widget-svg");
@@ -56,6 +69,15 @@
     el.querySelector(".rw-reset")?.addEventListener("click", () => {
       textarea.value = defaultJson;
       doRender();
+    });
+
+    el.querySelector(".rw-playground")?.addEventListener("click", () => {
+      try {
+        JSON.parse(textarea.value);
+        window.open(playgroundUrl(textarea.value), "_blank", "noopener,noreferrer");
+      } catch (e) {
+        showError("Cannot open playground: " + e.message);
+      }
     });
 
     doRender();
