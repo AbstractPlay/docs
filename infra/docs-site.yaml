@@ -92,7 +92,7 @@ Resources:
             QueryString: false
           FunctionAssociations:
             - EventType: viewer-request
-              FunctionARN: !GetAtt DocsRewriteIndexFunction.FunctionARN
+              FunctionARN: !GetAtt DocsRewriteIndexFunction.FunctionMetadata.FunctionARN
         ViewerCertificate:
           AcmCertificateArn: !Ref AcmCertificateArn
           SslSupportMethod: sni-only

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Prebuild: sync vendor docs into Eleventy input, generate schema refs, fetch APRender.
+ * Prebuild: sync vendor docs into Eleventy input, generate schema refs, build APRender from renderer.
  */
 const fs = require("fs");
 const path = require("path");
@@ -94,31 +94,49 @@ function syncDocs(repoName, prefix, useWidget) {
 
 function fetchAPRender(rendererRoot) {
   fs.mkdirSync(ASSETS_JS, { recursive: true });
+  const dest = path.join(ASSETS_JS, "APRender.min.js");
   const distBundle = path.join(rendererRoot, "dist", "APRender.min.js");
-  if (fs.existsSync(distBundle)) {
-    fs.copyFileSync(distBundle, path.join(ASSETS_JS, "APRender.min.js"));
+  const distScript = process.env.DOCS_STAGE === "prod" ? "dist-prod" : "dist-dev";
+  const cdnUrl =
+    process.env.DOCS_STAGE === "prod"
+      ? "https://renderer.abstractplay.com/APRender.min.js"
+      : "https://renderer.dev.abstractplay.com/APRender.min.js";
+
+  function copyBundle() {
+    if (!fs.existsSync(distBundle)) return false;
+    fs.copyFileSync(distBundle, dest);
+    return true;
+  }
+
+  if (copyBundle()) {
     console.log("Copied APRender.min.js from renderer dist");
     return;
   }
+
   try {
-    const npmrc = path.join(ROOT, ".npmrc");
-    if (!fs.existsSync(npmrc)) {
-      fs.writeFileSync(npmrc, "@abstractplay:registry=https://npm.pkg.github.com/\n");
+    console.log(`Building APRender.min.js in renderer (${distScript})...`);
+    execSync("npm ci", { cwd: rendererRoot, stdio: "inherit" });
+    execSync(`npm run ${distScript}`, { cwd: rendererRoot, stdio: "inherit" });
+    if (copyBundle()) {
+      console.log("Built and copied APRender.min.js from renderer");
+      return;
     }
-    execSync("npm pack @abstractplay/renderer@development", { cwd: ROOT, stdio: "pipe" });
-    const tgz = fs.readdirSync(ROOT).find((f) => f.startsWith("abstractplay-renderer-") && f.endsWith(".tgz"));
-    if (tgz) {
-      execSync(`tar -xzf ${tgz} package/dist/APRender.min.js`, { cwd: ROOT, shell: true });
-      fs.copyFileSync(path.join(ROOT, "package", "dist", "APRender.min.js"), path.join(ASSETS_JS, "APRender.min.js"));
-      fs.rmSync(path.join(ROOT, "package"), { recursive: true, force: true });
-      fs.unlinkSync(path.join(ROOT, tgz));
-      console.log("Fetched APRender.min.js from npm");
+  } catch (e) {
+    console.warn("Could not build APRender in renderer:", e.message);
+  }
+
+  try {
+    console.log(`Downloading APRender.min.js from renderer playground (${cdnUrl})...`);
+    execSync(`curl -fsSL "${cdnUrl}" -o "${dest}"`, { cwd: ROOT, shell: true });
+    if (!fs.existsSync(dest) || fs.statSync(dest).size < 1000) {
+      throw new Error("Downloaded file missing or too small");
     }
+    console.log("Fetched APRender.min.js from renderer playground");
   } catch (e) {
     console.warn("Could not fetch APRender.min.js:", e.message);
     fs.writeFileSync(
-      path.join(ASSETS_JS, "APRender.min.js"),
-      "/* APRender placeholder - run npm run build in renderer or configure GitHub packages */"
+      dest,
+      "/* APRender placeholder - run npm run dist-dev in renderer or deploy renderer playground */"
     );
   }
 }

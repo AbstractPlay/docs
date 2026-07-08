@@ -40,6 +40,8 @@ jobs:
 
       - run: npm ci
       - run: npm run build
+        env:
+          DOCS_STAGE: prod
 
       - name: Configure AWS credentials
         uses: Fooji/create-aws-profile-action@v1

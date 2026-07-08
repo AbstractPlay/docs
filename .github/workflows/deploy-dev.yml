@@ -42,6 +42,7 @@ jobs:
       - run: npm run build
         env:
           DOCS_CHECK_WARN: "0"
+          DOCS_STAGE: dev
 
       - name: Configure AWS credentials
         uses: Fooji/create-aws-profile-action@v1
