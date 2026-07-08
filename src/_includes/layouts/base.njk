@@ -1,6 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" color-mode="light">
 <head>
+  <script>
+    (function () {
+      var mode = localStorage.getItem("color-mode");
+      if (mode !== "light" && mode !== "dark") mode = "light";
+      document.documentElement.setAttribute("color-mode", mode);
+    })();
+  </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% if title %}{{ title }} — {% endif %}Abstract Play Docs</title>
@@ -24,5 +31,6 @@
     </main>
   </div>
   {% include "partials/footer.njk" %}
+  <script src="/assets/js/theme.js"></script>
 </body>
 </html>

@@ -1,19 +1,24 @@
 <header class="site-header">
-  <a href="/" class="site-logo">
-    <img
-      class="site-logo-img site-logo-img--light"
-      src="/assets/images/AbstractPlayLogo-light.svg"
-      alt="Abstract Play"
-      width="253"
-      height="72"
-    >
-    <img
-      class="site-logo-img site-logo-img--dark"
-      src="/assets/images/AbstractPlayLogo-dark.svg"
-      alt="Abstract Play"
-      width="253"
-      height="72"
-    >
-    <span class="site-logo-docs">Docs</span>
-  </a>
+  <div class="site-header-inner">
+    <a href="/" class="site-logo">
+      <img
+        class="site-logo-img dark--hidden"
+        src="/assets/images/AbstractPlayLogo-light.svg"
+        alt="Abstract Play"
+        width="253"
+        height="72"
+      >
+      <img
+        class="site-logo-img light--hidden"
+        src="/assets/images/AbstractPlayLogo-dark.svg"
+        alt="Abstract Play"
+        width="253"
+        height="72"
+      >
+      <span class="site-logo-docs">Docs</span>
+    </a>
+    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+      <span class="theme-toggle-icon" aria-hidden="true">&#x263E;</span>
+    </button>
+  </div>
 </header>

@@ -1,5 +1,5 @@
 /* Abstract Play brand colours (from front/src/index.css) */
-:root {
+:root[color-mode="light"] {
   --bg: #fff;
   --surface: #fff;
   --text: #000;
@@ -15,17 +15,25 @@
   --error: #c62828;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #222;
-    --surface: #222;
-    --text: #e6f2f2;
-    --muted: #c3d6f1;
-    --border: #444;
-    --brand: #009fbf;
-    --highlight-bg: #333;
-    --code-bg: #444;
-  }
+:root[color-mode="dark"] {
+  --bg: #222;
+  --surface: #222;
+  --text: #e6f2f2;
+  --muted: #c3d6f1;
+  --border: #444;
+  --brand: #009fbf;
+  --brand-accent: #ff6633;
+  --accent: #008ca8;
+  --accent-hover: #009fbf;
+  --highlight-bg: #333;
+  --code-bg: #444;
+  --nav-width: 240px;
+  --error: #c62828;
+}
+
+:root[color-mode="light"] .light--hidden,
+:root[color-mode="dark"] .dark--hidden {
+  display: none;
 }
 
 * { box-sizing: border-box; }
@@ -47,6 +55,15 @@ a:hover { color: var(--accent-hover); }
   padding: 0.75rem 1.5rem;
 }
 
+.site-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
 .site-logo {
   display: inline-flex;
   align-items: center;
@@ -60,11 +77,28 @@ a:hover { color: var(--accent-hover); }
   width: auto;
 }
 
-.site-logo-img--dark { display: none; }
+.theme-toggle {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--brand);
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-weight: bold;
+  line-height: 1;
+}
 
-@media (prefers-color-scheme: dark) {
-  .site-logo-img--light { display: none; }
-  .site-logo-img--dark { display: block; }
+.theme-toggle:hover {
+  background: var(--highlight-bg);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .site-logo-docs {
