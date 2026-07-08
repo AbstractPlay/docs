@@ -11,11 +11,61 @@ const WARN_ONLY = process.env.DOCS_CHECK_WARN === "1";
 let errors = [];
 let warnings = [];
 
+const resolvedRepos = new Map();
+
 function resolveRepo(name) {
+  if (resolvedRepos.has(name)) return resolvedRepos.get(name);
+
   const vendor = path.join(ROOT, "vendor", name);
   const sibling = path.join(ROOT, "..", name);
-  if (fs.existsSync(path.join(vendor, "package.json"))) return vendor;
-  return sibling;
+  const minDocs = { gameslib: 10, renderer: 8 }[name] || 1;
+
+  function repoDocCount(repoRoot) {
+    const docsRoot = path.join(repoRoot, "docs");
+    if (!fs.existsSync(docsRoot)) return 0;
+    let count = 0;
+    (function walk(dir) {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) walk(full);
+        else if (entry.name.endsWith(".md") && !entry.name.startsWith("_")) count++;
+      }
+    })(docsRoot);
+    return count;
+  }
+
+  const hasVendor = fs.existsSync(path.join(vendor, "package.json"));
+  const hasSibling = fs.existsSync(path.join(sibling, "package.json"));
+  const vendorDocs = hasVendor ? repoDocCount(vendor) : 0;
+  const siblingDocs = hasSibling ? repoDocCount(sibling) : 0;
+
+  let chosen;
+  if (hasVendor && vendorDocs >= minDocs) {
+    chosen = vendor;
+  } else if (hasVendor && vendorDocs > 0 && vendorDocs < minDocs) {
+    if (hasSibling && siblingDocs >= minDocs) {
+      warn(
+        `${name}: vendor/${name} has only ${vendorDocs} doc page(s) (expected ≥${minDocs}); ` +
+          `checking ../${name} instead — run \`npm run vendor:sync\` for CI parity`
+      );
+      chosen = sibling;
+    } else {
+      fail(
+        `${name}: vendor/${name} docs incomplete (${vendorDocs} page(s), expected ≥${minDocs}). ` +
+          "Run: npm run vendor:sync"
+      );
+      chosen = vendor;
+    }
+  } else if (hasSibling) {
+    chosen = sibling;
+  } else if (hasVendor) {
+    chosen = vendor;
+  } else {
+    throw new Error(`Cannot find ${name} at vendor/${name} or ../${name}`);
+  }
+
+  resolvedRepos.set(name, chosen);
+  return chosen;
 }
 
 function fail(msg) {
@@ -167,17 +217,28 @@ function isPublishedDocTarget(pathOnly, pageUrls) {
   return false;
 }
 
-function checkInternalDocLinks(repoName, repoPrefix) {
-  const docsRoot = path.join(resolveRepo(repoName), "docs");
-  if (!fs.existsSync(docsRoot)) {
-    warn(`${repoName} docs/ missing — skip link check`);
-    return;
+function checkAllInternalDocLinks() {
+  const repos = [
+    ["renderer", "renderer"],
+    ["gameslib", "gameslib"],
+  ];
+  const allPages = new Map();
+
+  for (const [repoName, repoPrefix] of repos) {
+    const docsRoot = path.join(resolveRepo(repoName), "docs");
+    if (!fs.existsSync(docsRoot)) {
+      warn(`${repoName} docs/ missing — skip link check`);
+      continue;
+    }
+    for (const [url, filePath] of collectDocPages(docsRoot, repoPrefix)) {
+      allPages.set(url, filePath);
+    }
   }
-  const pages = collectDocPages(docsRoot, repoPrefix);
-  const pageUrls = new Set(pages.keys());
+
+  const pageUrls = new Set(allPages.keys());
   const linkRe = /\[([^\]]*)\]\(([^)]+)\)/g;
 
-  for (const [pageUrl, filePath] of pages) {
+  for (const [pageUrl, filePath] of allPages) {
     const content = fs.readFileSync(filePath, "utf8");
     let match;
     while ((match = linkRe.exec(content)) !== null) {
@@ -200,8 +261,7 @@ checkGameBaseManifest();
 checkHelperExamples();
 checkCitedGames();
 checkRendererSamples();
-checkInternalDocLinks("renderer", "renderer");
-checkInternalDocLinks("gameslib", "gameslib");
+checkAllInternalDocLinks();
 
 for (const w of warnings) console.warn("WARN:", w);
 for (const e of errors) console.error("ERROR:", e);

@@ -9,6 +9,8 @@
   },
   "scripts": {
     "docs:check": "node scripts/docs-check.js",
+    "docs:check:local": "npm run vendor:sync && npm run docs:check",
+    "vendor:sync": "node scripts/vendor-sync.js",
     "docs:generate": "node scripts/generate-schema-ref.js && node scripts/generate-helper-examples.js",
     "extract-samples": "node scripts/extract-playground-samples.js",
     "prebuild": "node scripts/prebuild.js",
