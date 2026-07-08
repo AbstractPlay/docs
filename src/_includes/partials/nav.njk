@@ -3,7 +3,7 @@
     {% for item in navigation %}
     <li>
       <a href="{{ item.url }}"{% if page.url == item.url or page.url and page.url.indexOf(item.url) == 0 and item.url != '/' %} class="active"{% endif %}>{{ item.title }}</a>
-      {% if item.children and page.url and (page.url.indexOf('/renderer/') == 0 and item.title == 'Renderer' or page.url.indexOf('/gameslib/') == 0 and item.title == 'Gameslib') %}
+      {% if item.children and page.url and page.url.indexOf(item.url) == 0 and item.url != '/' %}
       <ul class="subnav">
         {% for child in item.children %}
         <li><a href="{{ child.url }}"{% if page.url == child.url %} class="active"{% endif %}>{{ child.title }}</a></li>

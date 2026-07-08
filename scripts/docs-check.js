@@ -172,6 +172,7 @@ function checkRendererSamples() {
 }
 
 const DOC_ASSET_URLS = new Set(["/gameslib/templates/new-game-template.ts"]);
+const { collectDocSlugs, loadNavOrder, validateNavConfig, navConfigLabel } = require("./nav-utils");
 
 function docUrl(repoPrefix, relPath) {
   const slug = relPath
@@ -215,6 +216,26 @@ function isPublishedDocTarget(pathOnly, pageUrls) {
   return false;
 }
 
+function checkNavConfig() {
+  for (const [repoName, repoPrefix] of [
+    ["renderer", "renderer"],
+    ["gameslib", "gameslib"],
+  ]) {
+    const docsRoot = path.join(resolveRepo(repoName), "docs");
+    if (!fs.existsSync(docsRoot)) {
+      warn(`${repoName} docs/ missing — skip nav check`);
+      continue;
+    }
+    const discovered = collectDocSlugs(docsRoot);
+    const { order, source } = loadNavOrder(docsRoot);
+    const label = navConfigLabel(source || docsRoot);
+    if (!source) {
+      warn(`${repoName}: no docs/nav.json — pages will be ordered alphabetically`);
+    }
+    validateNavConfig(repoPrefix, label, order, discovered, { fail, warn });
+  }
+}
+
 function checkAllInternalDocLinks() {
   const repos = [
     ["renderer", "renderer"],
@@ -252,6 +273,8 @@ function checkAllInternalDocLinks() {
       }
     }
   }
+
+  checkNavConfig();
 }
 
 checkRendererSchema();
