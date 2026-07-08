@@ -17,6 +17,7 @@ jobs:
         with:
           ref: develop
           submodules: recursive
+          token: ${{ secrets.PAT_READ_PACKAGES }}
 
       - name: Update submodules
         run: git submodule update --init --remote
