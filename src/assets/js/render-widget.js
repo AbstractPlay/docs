@@ -1,15 +1,9 @@
 (function () {
-  function decodeHtml(html) {
-    const txt = document.createElement("textarea");
-    txt.innerHTML = html;
-    return txt.value;
-  }
-
   function renderWidget(el) {
     const textarea = el.querySelector(".render-widget-json");
     const svgHost = el.querySelector(".render-widget-svg");
     const errorEl = el.querySelector(".render-widget-error");
-    const defaultJson = decodeHtml(el.getAttribute("data-default") || "{}");
+    const defaultJson = textarea.value;
     const prefix = el.id ? el.id + "-" : "rw-" + Math.random().toString(36).slice(2, 10) + "-";
     let debounceTimer;
 
