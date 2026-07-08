@@ -54,7 +54,7 @@ jobs:
 
       - name: CloudFront invalidation
         if: env.DOCS_CF_DIST != ''
-        uses: josemando/aws-cloudfront-create-invalidation@v1
-        with:
-          distribution-id: ${{ env.DOCS_CF_DIST }}
-          paths: "/*"
+        env:
+          AWS_SDK_LOAD_CONFIG: "1"
+          AWS_PROFILE: AbstractPlayProd
+        run: aws cloudfront create-invalidation --distribution-id "$DOCS_CF_DIST" --paths "/*"
