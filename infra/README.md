@@ -11,30 +11,32 @@ One-time setup using CloudFormation (`infra/docs-site.yaml`).
 
 ## Deploy dev stack
 
-```bash
-aws cloudformation deploy \
-  --profile AbstractPlayDev \
-  --region us-east-1 \
-  --stack-name abstractplay-docs-dev \
-  --template-file infra/docs-site.yaml \
-  --parameter-overrides \
-    Environment=dev \
-    DomainName=docs.dev.abstractplay.com \
-    AcmCertificateArn=arn:aws:acm:us-east-1:ACCOUNT:certificate/CERT_ID
+```powershell
+aws cloudformation deploy `
+  --profile AbstractPlayDev `
+  --region us-east-1 `
+  --stack-name abstractplay-docs-dev `
+  --template-file infra/docs-site.yaml `
+  --parameter-overrides `
+    Environment=dev `
+    DomainName=docs.dev.abstractplay.com `
+    AcmCertificateArn=[ARN]
 ```
+
+ID: E3IGHKNY0916DU
 
 ## Deploy prod stack
 
-```bash
-aws cloudformation deploy \
-  --profile AbstractPlayProd \
-  --region us-east-1 \
-  --stack-name abstractplay-docs-prod \
-  --template-file infra/docs-site.yaml \
-  --parameter-overrides \
-    Environment=prod \
-    DomainName=docs.abstractplay.com \
-    AcmCertificateArn=arn:aws:acm:us-east-1:ACCOUNT:certificate/CERT_ID
+```powershell
+aws cloudformation deploy `
+  --profile AbstractPlayProd `
+  --region us-east-1 `
+  --stack-name abstractplay-docs-prod `
+  --template-file infra/docs-site.yaml `
+  --parameter-overrides `
+    Environment=prod `
+    DomainName=docs.abstractplay.com `
+    AcmCertificateArn=[ARN]
 ```
 
 ## After deploy

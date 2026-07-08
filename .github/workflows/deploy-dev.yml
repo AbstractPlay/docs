@@ -10,6 +10,8 @@ on:
 jobs:
   deploy-dev:
     runs-on: ubuntu-latest
+    env:
+      DOCS_CF_DIST: ${{ secrets.DOCS_CF_DIST_DEV }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -46,8 +48,8 @@ jobs:
         run: npx serverless client deploy --stage dev --no-confirm
 
       - name: CloudFront invalidation
-        if: ${{ secrets.DOCS_CF_DIST_DEV != '' }}
+        if: env.DOCS_CF_DIST != ''
         uses: josemando/aws-cloudfront-create-invalidation@v1
         with:
-          distribution-id: ${{ secrets.DOCS_CF_DIST_DEV }}
+          distribution-id: ${{ env.DOCS_CF_DIST }}
           paths: "/*"
