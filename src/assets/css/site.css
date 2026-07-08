@@ -339,3 +339,16 @@ pre {
   padding-top: 1rem;
   border-top: 1px solid var(--border);
 }
+
+.contact-sheet {
+  display: block;
+  width: 100%;
+  max-height: 80vh;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+.contact-sheet-fallback {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}

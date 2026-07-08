@@ -42,6 +42,7 @@ module.exports = function (eleventyConfig) {
 
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "src/renderer/samples": "renderer/samples" });
+  eleventyConfig.addPassthroughCopy({ "src/renderer/contact-sheet.svg": "renderer/contact-sheet.svg" });
   eleventyConfig.addPassthroughCopy({ "src/gameslib/templates": "gameslib/templates" });
 
   eleventyConfig.addShortcode("renderWidget", renderWidgetHtml);
