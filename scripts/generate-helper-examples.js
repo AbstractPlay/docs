@@ -13,12 +13,32 @@ const gameslib = fs.existsSync(path.join(ROOT, "vendor", "gameslib", "src"))
 const gamesDir = path.join(gameslib, "src", "games");
 const outPath = path.join(gameslib, "docs", "helpers", "_examples.json");
 
+function loadGameNames() {
+  const names = new Map();
+  for (const file of fs.readdirSync(gamesDir)) {
+    if (!file.endsWith(".ts") || file.startsWith("_")) continue;
+    const content = fs.readFileSync(path.join(gamesDir, file), "utf8");
+    const block = content.match(/gameinfo:\s*APGamesInformation\s*=\s*\{([\s\S]*?)\n\s*\};/);
+    if (!block) continue;
+    const nameMatch = block[1].match(/name:\s*"([^"]+)"/);
+    const uidMatch = block[1].match(/uid:\s*"([^"]+)"/);
+    if (nameMatch && uidMatch) names.set(uidMatch[1], nameMatch[1]);
+  }
+  return names;
+}
+
+function gameLink(uid, names) {
+  const name = names.get(uid) || uid;
+  return `[${name}](https://play.abstractplay.com/games/${uid})`;
+}
+
 if (!fs.existsSync(gamesDir)) {
   console.warn("gameslib src/games not found");
   process.exit(0);
 }
 
 const map = {};
+const gameNames = loadGameNames();
 
 function add(helper, uid) {
   if (!map[helper]) map[helper] = [];
@@ -78,7 +98,7 @@ const sorted = Object.keys(map).sort();
 for (const helper of sorted) {
   const games = map[helper]
     .slice(0, 8)
-    .map((g) => `[${g}](https://play.abstractplay.com/games/${g})`)
+    .map((g) => gameLink(g, gameNames))
     .join(", ");
   const more = map[helper].length > 8 ? ` (+${map[helper].length - 8} more)` : "";
   lines.push(`| \`${helper}\` | ${games}${more} |`);
