@@ -36,6 +36,9 @@ function renderWidgetHtml(samplePath) {
 }
 
 module.exports = function (eleventyConfig) {
+  // Prebuild writes generated docs into gitignored src/renderer and src/gameslib.
+  eleventyConfig.setUseGitIgnore(false);
+
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
   eleventyConfig.addPassthroughCopy({ "src/renderer/samples": "renderer/samples" });
   eleventyConfig.addPassthroughCopy({ "src/gameslib/templates": "gameslib/templates" });

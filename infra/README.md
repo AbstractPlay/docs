@@ -48,6 +48,8 @@ aws cloudformation deploy `
    - `AWS_KEY`, `AWS_SECRET` (if not already org-wide)
 3. Create Route53 CNAME: domain → CloudFront domain name
 
+The stack includes a CloudFront Function that rewrites `/renderer/` → `/renderer/index.html` (and similar directory URLs). Redeploy the stack after template changes so subpath docs work.
+
 ## Deploy site content
 
 ```bash

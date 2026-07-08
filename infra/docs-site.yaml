@@ -48,6 +48,26 @@ Resources:
         SigningBehavior: always
         SigningProtocol: sigv4
 
+  DocsRewriteIndexFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub "docs-rewrite-index-${Environment}"
+      AutoPublish: true
+      FunctionConfig:
+        Comment: !Sub "Append index.html for directory URLs (${Environment})"
+        Runtime: cloudfront-js-2.0
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          var uri = request.uri;
+          if (uri.endsWith("/")) {
+            request.uri += "index.html";
+          } else if (!uri.includes(".")) {
+            request.uri += "/index.html";
+          }
+          return request;
+        }
+
   DocsDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -70,6 +90,9 @@ Resources:
           Compress: true
           ForwardedValues:
             QueryString: false
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt DocsRewriteIndexFunction.FunctionARN
         ViewerCertificate:
           AcmCertificateArn: !Ref AcmCertificateArn
           SslSupportMethod: sni-only
