@@ -123,11 +123,85 @@ function checkRendererSamples() {
   }
 }
 
+const DOC_ASSET_URLS = new Set(["/gameslib/templates/new-game-template.ts"]);
+
+function docUrl(repoPrefix, relPath) {
+  const slug = relPath
+    .replace(/\\/g, "/")
+    .replace(/\.md$/, "")
+    .replace(/\/index$/, "")
+    .replace(/^index$/, "index");
+  return slug === "index" ? `/${repoPrefix}/` : `/${repoPrefix}/${slug}/`;
+}
+
+function collectDocPages(docsRoot, repoPrefix) {
+  const pages = new Map();
+  function walk(dir, base = "") {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const rel = path.join(base, entry.name).replace(/\\/g, "/");
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(full, rel);
+      } else if (entry.name.endsWith(".md") && !entry.name.startsWith("_")) {
+        pages.set(docUrl(repoPrefix, rel), full);
+      }
+    }
+  }
+  walk(docsRoot);
+  return pages;
+}
+
+function resolveDocLink(pageUrl, href) {
+  const pathPart = href.split("#")[0];
+  if (!pathPart || pathPart.startsWith("http") || pathPart.startsWith("mailto:")) return null;
+  if (pathPart.startsWith("/")) return pathPart;
+  const base = pageUrl.endsWith("/") ? pageUrl : `${pageUrl}/`;
+  return new URL(pathPart, `http://local${base}`).pathname;
+}
+
+function isPublishedDocTarget(pathOnly, pageUrls) {
+  if (pageUrls.has(pathOnly)) return true;
+  if (!pathOnly.endsWith("/") && pageUrls.has(`${pathOnly}/`)) return true;
+  if (DOC_ASSET_URLS.has(pathOnly)) return true;
+  if (/^\/renderer\/samples\/.*\.json$/.test(pathOnly)) return true;
+  return false;
+}
+
+function checkInternalDocLinks(repoName, repoPrefix) {
+  const docsRoot = path.join(resolveRepo(repoName), "docs");
+  if (!fs.existsSync(docsRoot)) {
+    warn(`${repoName} docs/ missing — skip link check`);
+    return;
+  }
+  const pages = collectDocPages(docsRoot, repoPrefix);
+  const pageUrls = new Set(pages.keys());
+  const linkRe = /\[([^\]]*)\]\(([^)]+)\)/g;
+
+  for (const [pageUrl, filePath] of pages) {
+    const content = fs.readFileSync(filePath, "utf8");
+    let match;
+    while ((match = linkRe.exec(content)) !== null) {
+      const href = match[2].trim();
+      if (!href || href.startsWith("#") || href.startsWith("{%") || /^https?:/.test(href) || href.startsWith("mailto:")) {
+        continue;
+      }
+      const resolved = resolveDocLink(pageUrl, href);
+      if (!resolved) continue;
+      if (!isPublishedDocTarget(resolved, pageUrls)) {
+        const relFile = path.relative(ROOT, filePath).replace(/\\/g, "/");
+        fail(`Broken doc link in ${relFile}: […](${href}) resolves to ${resolved} (page is ${pageUrl})`);
+      }
+    }
+  }
+}
+
 checkRendererSchema();
 checkGameBaseManifest();
 checkHelperExamples();
 checkCitedGames();
 checkRendererSamples();
+checkInternalDocLinks("renderer", "renderer");
+checkInternalDocLinks("gameslib", "gameslib");
 
 for (const w of warnings) console.warn("WARN:", w);
 for (const e of errors) console.error("ERROR:", e);
