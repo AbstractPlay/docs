@@ -105,7 +105,7 @@ function checkGameBaseManifest() {
   const base = fs.readFileSync(basePath, "utf8");
   const doc = fs.readFileSync(docPath, "utf8");
   const abstractMethods = [...base.matchAll(/public abstract (\w+)\(/g)].map((m) => m[1]);
-  const manifestMatch = doc.match(/```yaml manifest\n([\s\S]*?)```/);
+  const manifestMatch = doc.match(/```yaml manifest\r?\n([\s\S]*?)```/);
   if (!manifestMatch) {
     warn("game-object.md missing yaml manifest block");
     return;
