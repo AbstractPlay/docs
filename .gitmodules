@@ -18,3 +18,7 @@
 	path = vendor/backend-crons
 	url = https://github.com/AbstractPlay/backend-crons.git
 	branch = develop
+[submodule "vendor/front"]
+	path = vendor/front
+	url = https://github.com/AbstractPlay/front.git
+	branch = develop

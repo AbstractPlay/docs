@@ -18,7 +18,7 @@ function resolveRepo(name) {
 
   const vendor = path.join(ROOT, "vendor", name);
   const sibling = path.join(ROOT, "..", name);
-  const minDocs = { gameslib: 10, renderer: 8, "node-backend": 20, recranks: 4, "backend-crons": 8 }[name] || 1;
+  const minDocs = { gameslib: 10, renderer: 8, "node-backend": 20, recranks: 4, "backend-crons": 8, front: 15 }[name] || 1;
 
   function repoDocCount(repoRoot) {
     const docsRoot = path.join(repoRoot, "docs");
@@ -242,6 +242,7 @@ function checkNavConfig() {
     ["node-backend", "backend"],
     ["recranks", "recranks"],
     ["backend-crons", "crons"],
+    ["front", "front"],
   ]) {
     const docsRoot = path.join(resolveRepo(repoName), "docs");
     if (!fs.existsSync(docsRoot)) {
@@ -265,6 +266,7 @@ function checkAllInternalDocLinks() {
     ["node-backend", "backend"],
     ["recranks", "recranks"],
     ["backend-crons", "crons"],
+    ["front", "front"],
   ];
   const allPages = new Map();
 
@@ -292,9 +294,15 @@ function checkAllInternalDocLinks() {
       }
       const resolved = resolveDocLink(pageUrl, href);
       if (!resolved) continue;
-      if (/\.(ts|tsx|js|yml|yaml|json)$/i.test(resolved)) continue;
+      if (/\.(ts|tsx|js|jsx|yml|yaml|json|css|scss)$/i.test(resolved)) continue;
       if (
         /^\/backend\/(api|lib|utils)\//.test(resolved)
+        && !isPublishedDocTarget(resolved, pageUrls)
+      ) {
+        continue;
+      }
+      if (
+        /^\/front\/(.*\/)?(src|public|config|\.github)\//.test(resolved)
         && !isPublishedDocTarget(resolved, pageUrls)
       ) {
         continue;
@@ -305,6 +313,7 @@ function checkAllInternalDocLinks() {
         && !resolved.startsWith("/backend/")
         && !resolved.startsWith("/recranks/")
         && !resolved.startsWith("/crons/")
+        && !resolved.startsWith("/front/")
         && resolved !== "/"
       ) {
         continue;

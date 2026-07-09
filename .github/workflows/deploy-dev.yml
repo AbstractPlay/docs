@@ -23,7 +23,7 @@ jobs:
         run: |
           git submodule sync --recursive
           git submodule update --init --recursive
-          for path in vendor/renderer vendor/gameslib vendor/node-backend vendor/recranks vendor/backend-crons; do
+          for path in vendor/renderer vendor/gameslib vendor/node-backend vendor/recranks vendor/backend-crons vendor/front; do
             git -C "$path" fetch --depth=1 origin develop
             git -C "$path" checkout FETCH_HEAD
           done

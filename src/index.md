@@ -27,14 +27,14 @@ Abstract Play is an open-source platform for playing abstract strategy games onl
     <p>Scheduled Lambdas: DB exports, static records, analytics, tournaments, and standing challenges.</p>
   </a>
   <a class="doc-card" href="/recranks/">
-    <h2>Recranks</h2>
+    <h2>Records & Rankings</h2>
     <p>Game record format, rating engines (ELO, Glicko-2, TrueSkill), and schema reference.</p>
   </a>
+  <a class="doc-card" href="/front/">
+    <h2>Front</h2>
+    <p>React client: architecture, local dev, API usage, subsystems, and deployment.</p>
+  </a>
 </div>
-
-## Coming soon
-
-- **front** — React client
 
 ## Resources
 

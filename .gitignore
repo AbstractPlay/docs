@@ -6,6 +6,7 @@ src/gameslib/
 src/backend/
 src/recranks/
 src/crons/
+src/front/
 src/assets/js/APRender.min.js
 src/_data/renderer-samples.json
 .DS_Store
