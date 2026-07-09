@@ -18,12 +18,15 @@ Abstract Play is an open-source platform for playing abstract strategy games onl
     <h2>Games Library</h2>
     <p>Game API, authoring guide, helpers, and how to add new games.</p>
   </a>
+  <a class="doc-card" href="/backend/">
+    <h2>Backend</h2>
+    <p>Serverless API, DynamoDB schema, bot framework, and subsystem guides.</p>
+  </a>
 </div>
 
 ## Coming soon
 
 - **front** — React client
-- **node-backend** — API and database bridge
 - **recranks** — game records and ratings
 
 ## Resources

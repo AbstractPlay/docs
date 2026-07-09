@@ -6,3 +6,7 @@
 	path = vendor/gameslib
 	url = https://github.com/AbstractPlay/gameslib.git
 	branch = develop
+[submodule "vendor/node-backend"]
+	path = vendor/node-backend
+	url = https://github.com/AbstractPlay/node-backend.git
+	branch = develop

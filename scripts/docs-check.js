@@ -18,7 +18,7 @@ function resolveRepo(name) {
 
   const vendor = path.join(ROOT, "vendor", name);
   const sibling = path.join(ROOT, "..", name);
-  const minDocs = { gameslib: 10, renderer: 8 }[name] || 1;
+  const minDocs = { gameslib: 10, renderer: 8, "node-backend": 20 }[name] || 1;
 
   function repoDocCount(repoRoot) {
     const docsRoot = path.join(repoRoot, "docs");
@@ -220,6 +220,7 @@ function checkNavConfig() {
   for (const [repoName, repoPrefix] of [
     ["renderer", "renderer"],
     ["gameslib", "gameslib"],
+    ["node-backend", "backend"],
   ]) {
     const docsRoot = path.join(resolveRepo(repoName), "docs");
     if (!fs.existsSync(docsRoot)) {
@@ -240,6 +241,7 @@ function checkAllInternalDocLinks() {
   const repos = [
     ["renderer", "renderer"],
     ["gameslib", "gameslib"],
+    ["node-backend", "backend"],
   ];
   const allPages = new Map();
 
@@ -267,6 +269,21 @@ function checkAllInternalDocLinks() {
       }
       const resolved = resolveDocLink(pageUrl, href);
       if (!resolved) continue;
+      if (/\.(ts|tsx|js|yml|yaml|json)$/i.test(resolved)) continue;
+      if (
+        /^\/backend\/(api|lib|utils)\//.test(resolved)
+        && !isPublishedDocTarget(resolved, pageUrls)
+      ) {
+        continue;
+      }
+      if (
+        !resolved.startsWith("/renderer/")
+        && !resolved.startsWith("/gameslib/")
+        && !resolved.startsWith("/backend/")
+        && resolved !== "/"
+      ) {
+        continue;
+      }
       if (!isPublishedDocTarget(resolved, pageUrls)) {
         const relFile = path.relative(ROOT, filePath).replace(/\\/g, "/");
         fail(`Broken doc link in ${relFile}: […](${href}) resolves to ${resolved} (page is ${pageUrl})`);

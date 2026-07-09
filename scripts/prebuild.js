@@ -7,17 +7,28 @@ const path = require("path");
 const { execSync } = require("child_process");
 
 const ROOT = path.join(__dirname, "..");
-const VENDOR_RENDERER = path.join(ROOT, "vendor", "renderer");
-const VENDOR_GAMESLIB = path.join(ROOT, "vendor", "gameslib");
-const FALLBACK_RENDERER = path.join(ROOT, "..", "renderer");
-const FALLBACK_GAMESLIB = path.join(ROOT, "..", "gameslib");
 const CONTENT = path.join(ROOT, "content");
 const ASSETS_JS = path.join(ROOT, "src", "assets", "js");
 
-function resolveVendor(name, fallback) {
+const VENDOR_FALLBACKS = {
+  renderer: path.join(ROOT, "..", "renderer"),
+  gameslib: path.join(ROOT, "..", "gameslib"),
+  "node-backend": path.join(ROOT, "..", "node-backend"),
+};
+
+function resolveVendor(name) {
+  const fallback = VENDOR_FALLBACKS[name];
   const vendorPath = path.join(ROOT, "vendor", name);
+  const vendorDocs = path.join(vendorPath, "docs", "nav.json");
+  const fallbackDocs = fallback ? path.join(fallback, "docs", "nav.json") : null;
+
+  if (fs.existsSync(vendorDocs)) return vendorPath;
+  if (fallbackDocs && fs.existsSync(fallbackDocs)) {
+    console.warn(`vendor/${name} docs missing; using sibling ${fallback}`);
+    return fallback;
+  }
   if (fs.existsSync(path.join(vendorPath, "package.json"))) return vendorPath;
-  if (fs.existsSync(path.join(fallback, "package.json"))) {
+  if (fallback && fs.existsSync(path.join(fallback, "package.json"))) {
     console.warn(`vendor/${name} missing; using sibling ${fallback}`);
     return fallback;
   }
@@ -60,7 +71,7 @@ function injectFrontmatter(filePath, meta) {
 }
 
 function syncDocs(repoName, prefix, useWidget) {
-  const vendorRoot = repoName === "renderer" ? resolveVendor("renderer", FALLBACK_RENDERER) : resolveVendor("gameslib", FALLBACK_GAMESLIB);
+  const vendorRoot = resolveVendor(repoName);
   const srcDocs = path.join(vendorRoot, "docs");
   const destDocs = path.join(CONTENT, repoName, "docs");
   rmrf(path.join(CONTENT, repoName));
@@ -148,20 +159,24 @@ if (fs.existsSync(path.join(ROOT, "dist"))) {
 }
 syncDocs("renderer", "renderer", true);
 syncDocs("gameslib", "gameslib", false);
+syncDocs("node-backend", "backend", false);
 
 execSync("node scripts/generate-schema-ref.js", { cwd: ROOT, stdio: "inherit" });
 execSync("node scripts/generate-helper-examples.js", { cwd: ROOT, stdio: "inherit" });
 
-const rendererRoot = resolveVendor("renderer", FALLBACK_RENDERER);
+const rendererRoot = resolveVendor("renderer");
 fetchAPRender(rendererRoot);
 
 // Point Eleventy at merged content via symlink-style copy into src
 const srcRenderer = path.join(ROOT, "src", "renderer");
 const srcGameslib = path.join(ROOT, "src", "gameslib");
+const srcBackend = path.join(ROOT, "src", "backend");
 rmrf(srcRenderer);
 rmrf(srcGameslib);
+rmrf(srcBackend);
 copyDir(path.join(CONTENT, "renderer", "docs"), srcRenderer);
-copyDir(path.join(resolveVendor("renderer", FALLBACK_RENDERER), "docs", "samples"), path.join(srcRenderer, "samples"));
+copyDir(path.join(resolveVendor("renderer"), "docs", "samples"), path.join(srcRenderer, "samples"));
 copyDir(path.join(CONTENT, "gameslib", "docs"), srcGameslib);
+copyDir(path.join(CONTENT, "node-backend", "docs"), srcBackend);
 
 console.log("Prebuild complete.");

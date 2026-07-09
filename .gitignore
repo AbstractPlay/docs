@@ -3,6 +3,7 @@ dist/
 content/
 src/renderer/
 src/gameslib/
+src/backend/
 src/assets/js/APRender.min.js
 src/_data/renderer-samples.json
 .DS_Store
