@@ -159,6 +159,40 @@ a:hover { color: var(--accent-hover); }
   font-size: 0.9rem;
 }
 
+.subnav .subnav {
+  margin-left: 0.5rem;
+}
+
+.nav-group {
+  display: block;
+  padding: 0.25rem 0.5rem;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text);
+  opacity: 0.85;
+}
+
+.nav-group.active-ancestor {
+  color: var(--brand);
+}
+
+.subnav li[data-depth="1"] > a,
+.subnav li[data-depth="1"] > .nav-group {
+  padding-left: 0.75rem;
+}
+
+.subnav li[data-depth="2"] > a,
+.subnav li[data-depth="2"] > .nav-group {
+  padding-left: 1.25rem;
+  font-size: 0.85rem;
+}
+
+.site-nav a.active-ancestor {
+  background: var(--highlight-bg);
+  color: var(--brand);
+  font-weight: 500;
+}
+
 .content {
   flex: 1;
   padding: 1.5rem 2rem;

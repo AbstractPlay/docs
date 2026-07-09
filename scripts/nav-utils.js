@@ -89,6 +89,7 @@ function buildSectionNav(prefix, orderConfig, discoveredSlugs) {
     used.add(slug);
     const discovered = discoveredSlugs.get(slug);
     result.push({
+      slug,
       title: configTitle || discovered.title || defaultTitle(slug),
       url: slugToUrl(prefix, slug),
     });
@@ -104,12 +105,107 @@ function buildSectionNav(prefix, orderConfig, discoveredSlugs) {
   for (const slug of unlisted) {
     const discovered = discoveredSlugs.get(slug);
     result.push({
+      slug,
       title: discovered.title || defaultTitle(slug),
       url: slugToUrl(prefix, slug),
     });
   }
 
   return result;
+}
+
+function isSlugParent(parentSlug, childSlug) {
+  return childSlug.startsWith(`${parentSlug}/`);
+}
+
+function findNodeBySlug(nodes, slug) {
+  return nodes.find((node) => node.slug === slug);
+}
+
+function createImplicitGroup(slug, depth) {
+  return {
+    slug,
+    title: defaultTitle(slug),
+    url: null,
+    implicit: true,
+    children: [],
+    depth,
+  };
+}
+
+/**
+ * Convert a flat ordered nav list into a tree using slug path prefixes.
+ * Creates implicit non-link group nodes when a parent slug has no page entry.
+ */
+function nestNavBySlug(flatItems) {
+  const roots = [];
+  const stack = [];
+
+  for (const item of flatItems) {
+    const slug = item.slug;
+    if (!slug) {
+      roots.push({ ...item, children: [], depth: 0 });
+      continue;
+    }
+
+    while (stack.length > 0 && !isSlugParent(stack[stack.length - 1].slug, slug)) {
+      stack.pop();
+    }
+
+    let parentChildren = roots;
+    let depth = 0;
+
+    if (stack.length > 0) {
+      parentChildren = stack[stack.length - 1].node.children;
+      depth = stack[stack.length - 1].node.depth + 1;
+    } else if (slug.includes("/")) {
+      const parts = slug.split("/");
+      for (let i = 1; i < parts.length; i++) {
+        const ancestorSlug = parts.slice(0, i).join("/");
+        const stackEntry = stack.find((entry) => entry.slug === ancestorSlug);
+        if (stackEntry) {
+          parentChildren = stackEntry.node.children;
+          depth = stackEntry.node.depth + 1;
+          continue;
+        }
+
+        let ancestorNode = findNodeBySlug(parentChildren, ancestorSlug);
+        if (!ancestorNode) {
+          ancestorNode = createImplicitGroup(ancestorSlug, depth);
+          parentChildren.push(ancestorNode);
+        } else {
+          depth = ancestorNode.depth + 1;
+        }
+
+        stack.push({ slug: ancestorSlug, node: ancestorNode });
+        parentChildren = ancestorNode.children;
+        depth = ancestorNode.depth + 1;
+      }
+    }
+
+    const existing = findNodeBySlug(parentChildren, slug);
+    if (existing && existing.implicit) {
+      existing.title = item.title;
+      existing.url = item.url;
+      existing.implicit = false;
+      stack.push({ slug, node: existing });
+      continue;
+    }
+
+    const node = {
+      slug,
+      title: item.title,
+      url: item.url,
+      implicit: false,
+      children: [],
+      depth,
+    };
+
+    parentChildren.push(node);
+    stack.push({ slug, node });
+  }
+
+  return roots;
 }
 
 function validateNavConfig(prefix, configLabel, orderConfig, discoveredSlugs, { fail, warn }) {
@@ -150,5 +246,6 @@ module.exports = {
   loadNavOrder,
   navConfigLabel,
   buildSectionNav,
+  nestNavBySlug,
   validateNavConfig,
 };

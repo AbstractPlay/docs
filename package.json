@@ -15,6 +15,7 @@
     "extract-samples": "node scripts/extract-playground-samples.js",
     "prebuild": "node scripts/prebuild.js",
     "build": "npm run docs:check && npm run prebuild && eleventy",
+    "test": "node --test scripts/nav-utils.test.js",
     "serve": "npm run prebuild && eleventy --serve",
     "deploy:dev": "npm run build && npx serverless client deploy --stage dev --no-confirm",
     "deploy:prod": "npm run build && npx serverless client deploy --stage prod --no-confirm"

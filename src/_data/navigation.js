@@ -4,6 +4,7 @@ const {
   collectDocSlugs,
   loadNavOrder,
   buildSectionNav,
+  nestNavBySlug,
 } = require("../../scripts/nav-utils");
 
 const ROOT = path.join(__dirname, "../..");
@@ -32,21 +33,21 @@ function sectionNav(prefix) {
   if (!dir) return [];
   const discovered = collectDocSlugs(dir);
   const { order } = loadNavOrder(dir);
-  return buildSectionNav(prefix, order, discovered);
+  return nestNavBySlug(buildSectionNav(prefix, order, discovered));
 }
 
 module.exports = function () {
   return [
     { title: "Home", url: "/" },
     {
+        title: "Gameslib",
+        url: "/gameslib/",
+        children: sectionNav("gameslib"),
+      },
+      {
       title: "Renderer",
       url: "/renderer/",
       children: sectionNav("renderer"),
-    },
-    {
-      title: "Gameslib",
-      url: "/gameslib/",
-      children: sectionNav("gameslib"),
     },
     {
       title: "Backend",
@@ -54,14 +55,14 @@ module.exports = function () {
       children: sectionNav("backend"),
     },
     {
-      title: "Recranks",
-      url: "/recranks/",
-      children: sectionNav("recranks"),
-    },
-    {
       title: "Crons",
       url: "/crons/",
       children: sectionNav("crons"),
     },
-  ];
+    {
+        title: "Recranks",
+        url: "/recranks/",
+        children: sectionNav("recranks"),
+      },
+    ];
 };
