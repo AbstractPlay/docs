@@ -6,7 +6,13 @@ const { execSync } = require("child_process");
 const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
-const SUBMODULES = ["vendor/renderer", "vendor/gameslib", "vendor/node-backend", "vendor/recranks"];
+const SUBMODULES = [
+  "vendor/renderer",
+  "vendor/gameslib",
+  "vendor/node-backend",
+  "vendor/recranks",
+  "vendor/backend-crons",
+];
 const BRANCH = process.env.VENDOR_BRANCH || "develop";
 
 function run(cmd) {

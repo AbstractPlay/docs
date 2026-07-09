@@ -14,3 +14,7 @@
 	path = vendor/recranks
 	url = https://github.com/AbstractPlay/recranks.git
 	branch = develop
+[submodule "vendor/backend-crons"]
+	path = vendor/backend-crons
+	url = https://github.com/AbstractPlay/backend-crons.git
+	branch = develop

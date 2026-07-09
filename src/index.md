@@ -26,6 +26,10 @@ Abstract Play is an open-source platform for playing abstract strategy games onl
     <h2>Recranks</h2>
     <p>Game record format, rating engines (ELO, Glicko-2, TrueSkill), and schema reference.</p>
   </a>
+  <a class="doc-card" href="/crons/">
+    <h2>Crons</h2>
+    <p>Scheduled Lambdas: DB exports, static records, analytics, tournaments, and standing challenges.</p>
+  </a>
 </div>
 
 ## Coming soon

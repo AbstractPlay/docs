@@ -15,6 +15,7 @@ const VENDOR_FALLBACKS = {
   gameslib: path.join(ROOT, "..", "gameslib"),
   "node-backend": path.join(ROOT, "..", "node-backend"),
   recranks: path.join(ROOT, "..", "recranks"),
+  "backend-crons": path.join(ROOT, "..", "backend-crons"),
 };
 
 function resolveVendor(name) {
@@ -162,6 +163,7 @@ syncDocs("renderer", "renderer", true);
 syncDocs("gameslib", "gameslib", false);
 syncDocs("node-backend", "backend", false);
 syncDocs("recranks", "recranks", false);
+syncDocs("backend-crons", "crons", false);
 
 execSync("node scripts/generate-schema-ref.js", { cwd: ROOT, stdio: "inherit" });
 execSync("node scripts/generate-helper-examples.js", { cwd: ROOT, stdio: "inherit" });
@@ -174,14 +176,17 @@ const srcRenderer = path.join(ROOT, "src", "renderer");
 const srcGameslib = path.join(ROOT, "src", "gameslib");
 const srcBackend = path.join(ROOT, "src", "backend");
 const srcRecranks = path.join(ROOT, "src", "recranks");
+const srcCrons = path.join(ROOT, "src", "crons");
 rmrf(srcRenderer);
 rmrf(srcGameslib);
 rmrf(srcBackend);
 rmrf(srcRecranks);
+rmrf(srcCrons);
 copyDir(path.join(CONTENT, "renderer", "docs"), srcRenderer);
 copyDir(path.join(resolveVendor("renderer"), "docs", "samples"), path.join(srcRenderer, "samples"));
 copyDir(path.join(CONTENT, "gameslib", "docs"), srcGameslib);
 copyDir(path.join(CONTENT, "node-backend", "docs"), srcBackend);
 copyDir(path.join(CONTENT, "recranks", "docs"), srcRecranks);
+copyDir(path.join(CONTENT, "backend-crons", "docs"), srcCrons);
 
 console.log("Prebuild complete.");

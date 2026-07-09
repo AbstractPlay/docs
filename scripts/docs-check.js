@@ -18,7 +18,7 @@ function resolveRepo(name) {
 
   const vendor = path.join(ROOT, "vendor", name);
   const sibling = path.join(ROOT, "..", name);
-  const minDocs = { gameslib: 10, renderer: 8, "node-backend": 20, recranks: 4 }[name] || 1;
+  const minDocs = { gameslib: 10, renderer: 8, "node-backend": 20, recranks: 4, "backend-crons": 8 }[name] || 1;
 
   function repoDocCount(repoRoot) {
     const docsRoot = path.join(repoRoot, "docs");
@@ -241,6 +241,7 @@ function checkNavConfig() {
     ["gameslib", "gameslib"],
     ["node-backend", "backend"],
     ["recranks", "recranks"],
+    ["backend-crons", "crons"],
   ]) {
     const docsRoot = path.join(resolveRepo(repoName), "docs");
     if (!fs.existsSync(docsRoot)) {
@@ -263,6 +264,7 @@ function checkAllInternalDocLinks() {
     ["gameslib", "gameslib"],
     ["node-backend", "backend"],
     ["recranks", "recranks"],
+    ["backend-crons", "crons"],
   ];
   const allPages = new Map();
 
@@ -302,6 +304,7 @@ function checkAllInternalDocLinks() {
         && !resolved.startsWith("/gameslib/")
         && !resolved.startsWith("/backend/")
         && !resolved.startsWith("/recranks/")
+        && !resolved.startsWith("/crons/")
         && resolved !== "/"
       ) {
         continue;
