@@ -157,5 +157,78 @@ Flags in \`gameinfo\` signal features that require special handling by the front
   console.log("Updated gameslib flags.md with generated enum");
 }
 
+function generateGamerecordSchemaRef() {
+  const schemaPath = path.join(resolveRepo("recranks"), "src", "schemas", "gamerecord.json");
+  if (!fs.existsSync(schemaPath)) {
+    console.warn("recranks gamerecord.json not found");
+    return;
+  }
+  const schema = JSON.parse(fs.readFileSync(schemaPath, "utf8"));
+  const outDir = path.join(resolveRepo("recranks"), "docs", "schema-reference");
+  fs.mkdirSync(outDir, { recursive: true });
+
+  const version = (schema.$id || "").match(/(\d+-\d+-\d+)/)?.[1]?.replace(/-/g, ".") || "unknown";
+  const headerProps = schema.properties?.header?.properties || {};
+  const playerProps = headerProps.players?.items?.properties || {};
+  const siteProps = headerProps.site?.properties || {};
+
+  const headerRows = Object.entries(headerProps)
+    .filter(([k]) => k !== "players")
+    .map(([k, v]) => [`\`${k}\``, (headerProps.required || []).includes(k) ? "yes" : "no", (v.description || "").slice(0, 120)]);
+
+  const playerRows = Object.entries(playerProps).map(([k, v]) => [
+    `\`${k}\``,
+    (playerProps.required || headerProps.players?.items?.required || []).includes(k) ? "yes" : "no",
+    (v.description || "").slice(0, 120),
+  ]);
+
+  const siteRows = Object.entries(siteProps).map(([k, v]) => [
+    `\`${k}\``,
+    (siteProps.required || []).includes(k) ? "yes" : "no",
+    (v.description || "").slice(0, 120),
+  ]);
+
+  let md = `---
+layout: layouts/base.njk
+permalink: /recranks/schema-reference/
+title: Schema reference
+generated: true
+schemaVersion: ${version}
+---
+
+# Game record schema reference (v${version})
+
+Auto-generated from \`gamerecord.json\`. Narrative documentation is in [Game records](/recranks/game-records/).
+
+## Top-level properties
+
+${mdTable(["Property", "Required", "Description"], [
+  ["header", "yes", schema.properties?.header?.description || "Game metadata"],
+  ["moves", "yes", schema.properties?.moves?.description || "Round-by-round move list"],
+])}
+
+## Header properties
+
+${mdTable(["Property", "Required", "Description"], headerRows)}
+
+## Site properties (\`header.site\`)
+
+${mdTable(["Property", "Required", "Description"], siteRows)}
+
+## Player properties (\`header.players[]\`)
+
+${mdTable(["Property", "Required", "Description"], playerRows)}
+
+## Moves
+
+\`moves\` is an array of rounds. Each round is an array of per-player entries (string, null, or move object with \`move\` text). Position in each round correlates to seating order in \`header.players\`.
+
+`;
+
+  fs.writeFileSync(path.join(outDir, "index.md"), md);
+  console.log("Generated recranks schema-reference");
+}
+
 generateRendererSchemaRef();
+generateGamerecordSchemaRef();
 generateGameslibFlags();

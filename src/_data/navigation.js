@@ -12,6 +12,7 @@ const CONTENT_DOC_DIRS = {
   renderer: path.join(ROOT, "content", "renderer", "docs"),
   gameslib: path.join(ROOT, "content", "gameslib", "docs"),
   backend: path.join(ROOT, "content", "node-backend", "docs"),
+  recranks: path.join(ROOT, "content", "recranks", "docs"),
 };
 
 function docsDir(prefix) {
@@ -50,6 +51,11 @@ module.exports = function () {
       title: "Backend",
       url: "/backend/",
       children: sectionNav("backend"),
+    },
+    {
+      title: "Recranks",
+      url: "/recranks/",
+      children: sectionNav("recranks"),
     },
   ];
 };

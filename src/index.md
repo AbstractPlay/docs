@@ -22,12 +22,15 @@ Abstract Play is an open-source platform for playing abstract strategy games onl
     <h2>Backend</h2>
     <p>Serverless API, DynamoDB schema, bot framework, and subsystem guides.</p>
   </a>
+  <a class="doc-card" href="/recranks/">
+    <h2>Recranks</h2>
+    <p>Game record format, rating engines (ELO, Glicko-2, TrueSkill), and schema reference.</p>
+  </a>
 </div>
 
 ## Coming soon
 
 - **front** — React client
-- **recranks** — game records and ratings
 
 ## Resources
 

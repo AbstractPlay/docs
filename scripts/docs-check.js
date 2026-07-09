@@ -18,7 +18,7 @@ function resolveRepo(name) {
 
   const vendor = path.join(ROOT, "vendor", name);
   const sibling = path.join(ROOT, "..", name);
-  const minDocs = { gameslib: 10, renderer: 8, "node-backend": 20 }[name] || 1;
+  const minDocs = { gameslib: 10, renderer: 8, "node-backend": 20, recranks: 4 }[name] || 1;
 
   function repoDocCount(repoRoot) {
     const docsRoot = path.join(repoRoot, "docs");
@@ -74,6 +74,25 @@ function fail(msg) {
 
 function warn(msg) {
   warnings.push(msg);
+}
+
+function checkGamerecordSchema() {
+  const schemaPath = path.join(resolveRepo("recranks"), "src", "schemas", "gamerecord.json");
+  const refPath = path.join(resolveRepo("recranks"), "docs", "schema-reference", "index.md");
+  if (!fs.existsSync(schemaPath)) {
+    warn("recranks gamerecord.json missing");
+    return;
+  }
+  if (!fs.existsSync(refPath)) {
+    fail("recranks schema-reference/index.md not generated");
+    return;
+  }
+  const ref = fs.readFileSync(refPath, "utf8");
+  for (const field of ["date-end", "date-start", "players", "moves", "gameid"]) {
+    if (!ref.includes(field)) {
+      fail(`Gamerecord field '${field}' missing from schema-reference`);
+    }
+  }
 }
 
 function checkRendererSchema() {
@@ -221,6 +240,7 @@ function checkNavConfig() {
     ["renderer", "renderer"],
     ["gameslib", "gameslib"],
     ["node-backend", "backend"],
+    ["recranks", "recranks"],
   ]) {
     const docsRoot = path.join(resolveRepo(repoName), "docs");
     if (!fs.existsSync(docsRoot)) {
@@ -242,6 +262,7 @@ function checkAllInternalDocLinks() {
     ["renderer", "renderer"],
     ["gameslib", "gameslib"],
     ["node-backend", "backend"],
+    ["recranks", "recranks"],
   ];
   const allPages = new Map();
 
@@ -280,6 +301,7 @@ function checkAllInternalDocLinks() {
         !resolved.startsWith("/renderer/")
         && !resolved.startsWith("/gameslib/")
         && !resolved.startsWith("/backend/")
+        && !resolved.startsWith("/recranks/")
         && resolved !== "/"
       ) {
         continue;
@@ -295,6 +317,7 @@ function checkAllInternalDocLinks() {
 }
 
 checkRendererSchema();
+checkGamerecordSchema();
 checkGameBaseManifest();
 checkHelperExamples();
 checkCitedGames();

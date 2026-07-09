@@ -15,7 +15,7 @@ npm run extract-samples   # once, or when playground samples change
 npm run serve             # http://localhost:8080
 ```
 
-If submodules are not initialized, prebuild falls back to sibling `../renderer` and `../gameslib` directories.
+If submodules are not initialized, prebuild falls back to sibling `../renderer`, `../gameslib`, `../node-backend`, and `../recranks` directories.
 
 ## Build
 
@@ -31,10 +31,10 @@ See [infra/README.md](infra/README.md).
 
 ## CI
 
-Deploy workflows listen for `repository_dispatch` from renderer and gameslib (`dep_update_dev` / `dep_update_prod`). Each run fetches the latest `develop` or `main` tip from both vendor submodules before building.
+Deploy workflows listen for `repository_dispatch` from renderer, gameslib, and recranks (`dep_update_dev` / `dep_update_prod`). Each run fetches the latest `develop` or `main` tip from vendor submodules before building.
 
 ## Contributing
 
-Documentation content lives in each repository's `/docs` folder. Update renderer or gameslib docs there; this repo aggregates via submodules.
+Documentation content lives in each repository's `/docs` folder. Update renderer, gameslib, or recranks docs there; this repo aggregates via submodules.
 
 When changing `schema.json`, `gameinfo.json`, or `GameBase`, update `/docs` in the same PR.

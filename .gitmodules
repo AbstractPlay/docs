@@ -10,3 +10,7 @@
 	path = vendor/node-backend
 	url = https://github.com/AbstractPlay/node-backend.git
 	branch = develop
+[submodule "vendor/recranks"]
+	path = vendor/recranks
+	url = https://github.com/AbstractPlay/recranks.git
+	branch = develop
