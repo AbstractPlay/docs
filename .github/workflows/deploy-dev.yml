@@ -10,8 +10,6 @@ on:
 jobs:
   deploy-dev:
     runs-on: ubuntu-latest
-    env:
-      DOCS_CF_DIST: ${{ secrets.DOCS_CF_DIST_DEV }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,10 +52,3 @@ jobs:
 
       - name: Deploy to S3
         run: npx serverless client deploy --stage dev --no-confirm
-
-      - name: CloudFront invalidation
-        if: env.DOCS_CF_DIST != ''
-        env:
-          AWS_SDK_LOAD_CONFIG: "1"
-          AWS_PROFILE: AbstractPlayDev
-        run: aws cloudfront create-invalidation --distribution-id "$DOCS_CF_DIST" --paths "/*"
