@@ -30,6 +30,9 @@ custom:
       "assets/**":
         - name: Cache-Control
           value: "public, max-age=31536000, immutable"
+      "assets/js/APRender.min.js":
+        - name: Cache-Control
+          value: "public, max-age=3600"
       "renderer/samples/**":
         - name: Cache-Control
           value: "public, max-age=31536000, immutable"
