@@ -13,6 +13,17 @@
   --code-bg: #f5f5f5;
   --nav-width: 240px;
   --error: #c62828;
+  --pf-text: var(--text);
+  --pf-text-secondary: var(--muted);
+  --pf-text-muted: var(--muted);
+  --pf-background: var(--surface);
+  --pf-border: var(--border);
+  --pf-border-focus: var(--accent);
+  --pf-skeleton: var(--code-bg);
+  --pf-skeleton-shine: var(--highlight-bg);
+  --pf-hover: var(--highlight-bg);
+  --pf-mark: var(--brand-accent);
+  --pf-outline-focus: var(--accent);
 }
 
 :root[color-mode="dark"] {
@@ -29,6 +40,17 @@
   --code-bg: #444;
   --nav-width: 240px;
   --error: #c62828;
+  --pf-text: var(--text);
+  --pf-text-secondary: var(--muted);
+  --pf-text-muted: var(--muted);
+  --pf-background: var(--surface);
+  --pf-border: var(--border);
+  --pf-border-focus: var(--accent);
+  --pf-skeleton: var(--code-bg);
+  --pf-skeleton-shine: var(--highlight-bg);
+  --pf-hover: var(--highlight-bg);
+  --pf-mark: var(--brand-accent);
+  --pf-outline-focus: var(--accent);
 }
 
 :root[color-mode="light"] .light--hidden,
@@ -75,6 +97,17 @@ a:hover { color: var(--accent-hover); }
 .site-logo-img {
   height: 2.25rem;
   width: auto;
+}
+
+.site-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.site-search-trigger {
+  min-width: 10rem;
 }
 
 .theme-toggle {

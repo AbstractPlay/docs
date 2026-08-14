@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const { execSync } = require("child_process");
 
 const ROOT = __dirname;
 const CONTENT = path.join(ROOT, "content");
@@ -18,7 +19,7 @@ function renderWidgetHtml(samplePath) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
-  return `<div class="render-widget" id="${id}" data-default="${escaped}">
+  return `<div class="render-widget" id="${id}" data-default="${escaped}" data-pagefind-ignore="all">
   <div class="render-widget-panels">
     <div class="render-widget-editor">
       <div class="render-widget-toolbar">
@@ -55,6 +56,11 @@ module.exports = function (eleventyConfig) {
 
   eleventyConfig.addFilter("githubGameLink", (uid) => {
     return `https://github.com/AbstractPlay/gameslib/blob/develop/src/games/${uid}.ts`;
+  });
+
+  eleventyConfig.on("eleventy.after", () => {
+    console.log("[pagefind] Building search index...");
+    execSync("npx pagefind --site dist", { stdio: "inherit", cwd: ROOT });
   });
 
   return {

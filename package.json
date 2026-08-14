@@ -23,6 +23,7 @@
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
     "markdown-it": "^14.1.0",
+    "pagefind": "^1.5.2",
     "serverless": "^3.38.0",
     "serverless-finch": "^4.0.3"
   },
