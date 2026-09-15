@@ -92,6 +92,7 @@ const lines = [
   "",
   "| Helper / module | Example games |",
   "| --- | --- |",
+  "| **Incompatible variant combinations** | [Lines of Action](https://play.abstractplay.com/games/loa), [Druid](https://play.abstractplay.com/games/druid), [Magnate](https://play.abstractplay.com/games/magnate), [Minefield](https://play.abstractplay.com/games/minefield) — see [Variants](/gameslib/variants/) |",
 ];
 
 const sorted = Object.keys(map).sort();
