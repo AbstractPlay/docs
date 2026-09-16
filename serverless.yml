@@ -1,6 +1,7 @@
 service: abstractplay-docs
+org: abstractplay
 
-frameworkVersion: "3"
+frameworkVersion: "4"
 
 plugins:
   - serverless-finch

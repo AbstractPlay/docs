@@ -58,3 +58,5 @@ npm run deploy:prod  # main branch / prod bucket
 ```
 
 serverless-finch syncs `./dist` to the bucket configured in `serverless.yml` (`manageResources: false` — bucket policy and CloudFront are managed by CloudFormation).
+
+Site deploys use **Serverless Framework v4** (`serverless@4.42.0` devDependency). CI sets `SERVERLESS_ACCESS_KEY` and `SERVERLESS_ORG=abstractplay`. For local `npm run deploy:dev`, use the same org access key in your environment or `serverless login`.
