@@ -12,13 +12,14 @@ let errors = [];
 let warnings = [];
 
 const resolvedRepos = new Map();
+const { resolveCronsDocsRoot } = require("./crons-docs");
 
 function resolveRepo(name) {
   if (resolvedRepos.has(name)) return resolvedRepos.get(name);
 
   const vendor = path.join(ROOT, "vendor", name);
   const sibling = path.join(ROOT, "..", name);
-  const minDocs = { gameslib: 10, renderer: 8, "node-backend": 20, recranks: 4, "backend-crons": 8, front: 15 }[name] || 1;
+  const minDocs = { gameslib: 10, renderer: 8, "node-backend": 20, recranks: 4, front: 15 }[name] || 1;
 
   function repoDocCount(repoRoot) {
     const docsRoot = path.join(repoRoot, "docs");
@@ -235,15 +236,19 @@ function isPublishedDocTarget(pathOnly, pageUrls) {
   return false;
 }
 
+function cronsDocsRoot() {
+  return resolveCronsDocsRoot(resolveRepo("node-backend"), { warn });
+}
+
 function checkNavConfig() {
-  for (const [repoName, repoPrefix] of [
+  const sections = [
     ["renderer", "renderer"],
     ["gameslib", "gameslib"],
     ["node-backend", "backend"],
     ["recranks", "recranks"],
-    ["backend-crons", "crons"],
     ["front", "front"],
-  ]) {
+  ];
+  for (const [repoName, repoPrefix] of sections) {
     const docsRoot = path.join(resolveRepo(repoName), "docs");
     if (!fs.existsSync(docsRoot)) {
       warn(`${repoName} docs/ missing — skip nav check`);
@@ -257,6 +262,15 @@ function checkNavConfig() {
     }
     validateNavConfig(repoPrefix, label, order, discovered, { fail, warn });
   }
+
+  const cronsRoot = cronsDocsRoot();
+  const discovered = collectDocSlugs(cronsRoot);
+  const { order, source } = loadNavOrder(cronsRoot);
+  const label = navConfigLabel(source || cronsRoot);
+  if (!source) {
+    warn("crons: no docs/nav.json — pages will be ordered alphabetically");
+  }
+  validateNavConfig("crons", label, order, discovered, { fail, warn });
 }
 
 function checkAllInternalDocLinks() {
@@ -265,7 +279,6 @@ function checkAllInternalDocLinks() {
     ["gameslib", "gameslib"],
     ["node-backend", "backend"],
     ["recranks", "recranks"],
-    ["backend-crons", "crons"],
     ["front", "front"],
   ];
   const allPages = new Map();
@@ -279,6 +292,11 @@ function checkAllInternalDocLinks() {
     for (const [url, filePath] of collectDocPages(docsRoot, repoPrefix)) {
       allPages.set(url, filePath);
     }
+  }
+
+  const cronsRoot = cronsDocsRoot();
+  for (const [url, filePath] of collectDocPages(cronsRoot, "crons")) {
+    allPages.set(url, filePath);
   }
 
   const pageUrls = new Set(allPages.keys());

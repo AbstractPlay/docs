@@ -14,7 +14,7 @@ const CONTENT_DOC_DIRS = {
   gameslib: path.join(ROOT, "content", "gameslib", "docs"),
   backend: path.join(ROOT, "content", "node-backend", "docs"),
   recranks: path.join(ROOT, "content", "recranks", "docs"),
-  crons: path.join(ROOT, "content", "backend-crons", "docs"),
+  crons: path.join(ROOT, "content", "crons", "docs"),
   front: path.join(ROOT, "content", "front", "docs"),
 };
 

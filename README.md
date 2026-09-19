@@ -15,7 +15,7 @@ npm run extract-samples   # once, or when playground samples change
 npm run serve             # http://localhost:8080
 ```
 
-If submodules are not initialized, prebuild falls back to sibling `../renderer`, `../gameslib`, `../node-backend`, `../recranks`, `../backend-crons`, and `../front` directories.
+If submodules are not initialized, prebuild falls back to sibling `../renderer`, `../gameslib`, `../node-backend`, `../recranks`, and `../front` directories. Crons docs are synced from `node-backend/crons/docs`.
 
 ## Build
 
@@ -31,7 +31,7 @@ See [infra/README.md](infra/README.md).
 
 ## CI
 
-Deploy workflows listen for `repository_dispatch` from renderer, gameslib, and recranks (`dep_update_dev` / `dep_update_prod`). Each run fetches the latest `develop` or `main` tip from vendor submodules before building.
+Deploy workflows listen for `repository_dispatch` from renderer, gameslib, recranks, and node-backend (`dep_update_dev` / `dep_update_prod`). Each run fetches the latest `develop` or `main` tip from vendor submodules before building.
 
 ## Contributing
 

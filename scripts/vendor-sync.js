@@ -11,7 +11,6 @@ const SUBMODULES = [
   "vendor/gameslib",
   "vendor/node-backend",
   "vendor/recranks",
-  "vendor/backend-crons",
   "vendor/front",
 ];
 const BRANCH = process.env.VENDOR_BRANCH || "develop";

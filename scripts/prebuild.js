@@ -10,12 +10,13 @@ const ROOT = path.join(__dirname, "..");
 const CONTENT = path.join(ROOT, "content");
 const ASSETS_JS = path.join(ROOT, "src", "assets", "js");
 
+const { resolveCronsDocsRoot } = require("./crons-docs");
+
 const VENDOR_FALLBACKS = {
   renderer: path.join(ROOT, "..", "renderer"),
   gameslib: path.join(ROOT, "..", "gameslib"),
   "node-backend": path.join(ROOT, "..", "node-backend"),
   recranks: path.join(ROOT, "..", "recranks"),
-  "backend-crons": path.join(ROOT, "..", "backend-crons"),
   front: path.join(ROOT, "..", "front"),
 };
 
@@ -73,15 +74,7 @@ function injectFrontmatter(filePath, meta) {
   fs.writeFileSync(filePath, lines.join("\n") + body);
 }
 
-function syncDocs(repoName, prefix, useWidget) {
-  const vendorRoot = resolveVendor(repoName);
-  const srcDocs = path.join(vendorRoot, "docs");
-  const destDocs = path.join(CONTENT, repoName, "docs");
-  rmrf(path.join(CONTENT, repoName));
-  copyDir(srcDocs, destDocs, {
-    filter: (f) => !f.endsWith(".adoc") && !path.basename(f).startsWith("_"),
-  });
-
+function injectSyncedDocPages(destDocs, prefix, useWidget) {
   function walkMd(dir, base = "") {
     if (!fs.existsSync(dir)) return;
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -103,7 +96,22 @@ function syncDocs(repoName, prefix, useWidget) {
     }
   }
   walkMd(destDocs);
-  console.log(`Synced ${repoName} docs -> content/${repoName}/docs`);
+}
+
+function syncDocsFromSrc(srcDocs, contentKey, prefix, useWidget) {
+  const destDocs = path.join(CONTENT, contentKey, "docs");
+  rmrf(path.join(CONTENT, contentKey));
+  copyDir(srcDocs, destDocs, {
+    filter: (f) => !f.endsWith(".adoc") && !path.basename(f).startsWith("_"),
+  });
+  injectSyncedDocPages(destDocs, prefix, useWidget);
+  console.log(`Synced ${contentKey} docs -> content/${contentKey}/docs`);
+}
+
+function syncDocs(repoName, prefix, useWidget) {
+  const vendorRoot = resolveVendor(repoName);
+  const srcDocs = path.join(vendorRoot, "docs");
+  syncDocsFromSrc(srcDocs, repoName, prefix, useWidget);
 }
 
 function fetchAPRender(rendererRoot) {
@@ -164,7 +172,14 @@ syncDocs("renderer", "renderer", true);
 syncDocs("gameslib", "gameslib", false);
 syncDocs("node-backend", "backend", false);
 syncDocs("recranks", "recranks", false);
-syncDocs("backend-crons", "crons", false);
+syncDocsFromSrc(
+  resolveCronsDocsRoot(resolveVendor("node-backend"), {
+    warn: (msg) => console.warn(msg),
+  }),
+  "crons",
+  "crons",
+  false
+);
 syncDocs("front", "front", false);
 
 execSync("node scripts/generate-schema-ref.js", { cwd: ROOT, stdio: "inherit" });
@@ -191,7 +206,7 @@ copyDir(path.join(resolveVendor("renderer"), "docs", "samples"), path.join(srcRe
 copyDir(path.join(CONTENT, "gameslib", "docs"), srcGameslib);
 copyDir(path.join(CONTENT, "node-backend", "docs"), srcBackend);
 copyDir(path.join(CONTENT, "recranks", "docs"), srcRecranks);
-copyDir(path.join(CONTENT, "backend-crons", "docs"), srcCrons);
+copyDir(path.join(CONTENT, "crons", "docs"), srcCrons);
 copyDir(path.join(CONTENT, "front", "docs"), srcFront);
 
 console.log("Prebuild complete.");
