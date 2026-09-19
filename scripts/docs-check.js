@@ -320,6 +320,12 @@ function checkAllInternalDocLinks() {
         continue;
       }
       if (
+        /^\/crons\/(src|scripts)\//.test(resolved)
+        && !isPublishedDocTarget(resolved, pageUrls)
+      ) {
+        continue;
+      }
+      if (
         /^\/front\/(.*\/)?(src|public|config|\.github)\//.test(resolved)
         && !isPublishedDocTarget(resolved, pageUrls)
       ) {
