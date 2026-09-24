@@ -5,14 +5,18 @@ title: Abstract Play Developer Docs
 
 # Abstract Play Developer Docs
 
-Abstract Play is an open-source platform for playing abstract strategy games online. The stack is TypeScript on the backend, React on the frontend, and AWS for hosting.
+Abstract Play is an open-source platform for playing abstract strategy games online.
+
+The **backend** is TypeScript on AWS: Cognito for accounts, DynamoDB for data, Lambda and API Gateway for the API, and supporting services for bots, crons, and static assets. The **front end** is a React SPA served through CloudFront. Game logic lives in **gameslib**; board rendering in **renderer**; batch ratings and record schema in **recranks**.
+
+We welcome contributors. Ask questions in [Discord #dev-curious](https://discord.abstractplay.com).
 
 ## Documentation
 
 <div class="doc-cards">
   <a class="doc-card" href="/gameslib/">
     <h2>Games Library</h2>
-    <p>Game API, authoring guide, helpers, and how to add new games.</p>
+    <p>Game API, authoring guide, helpers, meta-game catalog, categories, and how to add new games.</p>
   </a>
   <a class="doc-card" href="/renderer/">
     <h2>Renderer</h2>
@@ -36,10 +40,26 @@ Abstract Play is an open-source platform for playing abstract strategy games onl
   </a>
 </div>
 
+## Repositories
+
+| Repository | Docs | Role |
+| --- | --- | --- |
+| [front](https://github.com/AbstractPlay/front) | [/front/](/front/) | React play client |
+| [gameslib](https://github.com/AbstractPlay/gameslib) | [/gameslib/](/gameslib/) | Game implementations and registry |
+| [renderer](https://github.com/AbstractPlay/renderer) | [/renderer/](/renderer/) | SVG board renderer |
+| [node-backend](https://github.com/AbstractPlay/node-backend) | [/backend/](/backend/), [/crons/](/crons/) | API, DynamoDB, bots, and scheduled jobs (`crons/` in the same repo) |
+| [recranks](https://github.com/AbstractPlay/recranks) | [/recranks/](/recranks/) | Records and rating engines |
+
+The former [backend-crons](https://github.com/AbstractPlay/backend-crons) repository is **archived**; crons code and docs now live under **`node-backend/crons/`**.
+
+Related projects: [Ai Ai bot](https://github.com/AbstractPlay/aiai) (Java), community sites **designer** and **zendo** (Svelte) for experiments outside the main play stack.
+
+Tooling references: [Meta-game catalog](/gameslib/meta-games/) (uids for integrations), [Categories & tags](/gameslib/categories/).
+
 ## Resources
 
 - [GitHub organization](https://github.com/AbstractPlay)
-- [Coding wiki](https://abstractplay.com/wiki/doku.php?id=coding_docs) (legacy; prefer this site)
+- [Community wiki](https://abstractplay.com/wiki) — rules and player guides (`games:*` articles)
 - [Discord #dev-curious](https://discord.abstractplay.com)
 - [Renderer playground](https://renderer.dev.abstractplay.com) (full interactive demo)
 - [Gameslib playground](https://gameslib.dev.abstractplay.com) (local game testing)
