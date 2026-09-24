@@ -50,6 +50,11 @@ aws cloudformation deploy `
 
 The stack includes a CloudFront Function that rewrites `/renderer/` → `/renderer/index.html` (and similar directory URLs). Redeploy the stack after template changes so subpath docs work.
 
+## Search indexing
+
+- **`robots.txt` / `sitemap.xml`** are generated at build time (`scripts/generate-seo.js`) and deployed with the site. Prod robots uses Google wildcards to disallow source-like URLs (e.g. `/backend/lib/*.ts`) that return **403** while keeping HTML doc permalinks crawlable.
+- Optional follow-up: attach a CloudFront **response headers policy** so **403/404** responses include `X-Robots-Tag: noindex` (not in template yet).
+
 ## Deploy site content
 
 ```bash

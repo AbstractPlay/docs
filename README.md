@@ -23,7 +23,7 @@ If submodules are not initialized, prebuild falls back to sibling `../renderer`,
 npm run build
 ```
 
-Runs `docs:check`, syncs vendor docs, generates schema reference pages, copies `APRender.min.js`, and outputs to `dist/`.
+Runs `docs:check`, syncs vendor docs, generates schema reference pages, copies `APRender.min.js`, builds HTML to `dist/`, then writes **`robots.txt`** (prod: disallow source-like paths such as `*.ts`) and **`sitemap.xml`** (published doc pages only). Dev builds use `Disallow: /` for the whole site.
 
 ## AWS setup
 

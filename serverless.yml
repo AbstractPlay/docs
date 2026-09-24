@@ -43,3 +43,9 @@ custom:
       "**/*.html":
         - name: Cache-Control
           value: "no-cache, no-store, must-revalidate"
+      "robots.txt":
+        - name: Cache-Control
+          value: "public, max-age=86400"
+      "sitemap.xml":
+        - name: Cache-Control
+          value: "public, max-age=3600"

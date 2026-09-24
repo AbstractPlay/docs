@@ -59,6 +59,12 @@ module.exports = function (eleventyConfig) {
   });
 
   eleventyConfig.on("eleventy.after", () => {
+    console.log("[generate-seo] Writing robots.txt and sitemap.xml...");
+    execSync("node scripts/generate-seo.js", {
+      stdio: "inherit",
+      cwd: ROOT,
+      env: { ...process.env, DOCS_DIST: path.join(ROOT, "dist") },
+    });
     console.log("[pagefind] Building search index...");
     execSync("npx pagefind --site dist", { stdio: "inherit", cwd: ROOT });
   });
