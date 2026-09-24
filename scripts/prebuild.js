@@ -11,6 +11,7 @@ const CONTENT = path.join(ROOT, "content");
 const ASSETS_JS = path.join(ROOT, "src", "assets", "js");
 
 const { resolveCronsDocsRoot } = require("./crons-docs");
+const { generateGameslibDocsCatalog } = require("./gameslib-gen-docs-catalog");
 
 const VENDOR_FALLBACKS = {
   renderer: path.join(ROOT, "..", "renderer"),
@@ -102,7 +103,13 @@ function syncDocsFromSrc(srcDocs, contentKey, prefix, useWidget) {
   const destDocs = path.join(CONTENT, contentKey, "docs");
   rmrf(path.join(CONTENT, contentKey));
   copyDir(srcDocs, destDocs, {
-    filter: (f) => !f.endsWith(".adoc") && !path.basename(f).startsWith("_"),
+    filter: (f) => {
+      const base = path.basename(f);
+      if (f.endsWith(".adoc")) return false;
+      if (base.startsWith("_")) return false;
+      if (base.endsWith(".prose.md")) return false;
+      return true;
+    },
   });
   injectSyncedDocPages(destDocs, prefix, useWidget);
   console.log(`Synced ${contentKey} docs -> content/${contentKey}/docs`);
@@ -169,6 +176,7 @@ if (fs.existsSync(path.join(ROOT, "dist"))) {
   fs.rmSync(path.join(ROOT, "dist"), { recursive: true, force: true });
 }
 syncDocs("renderer", "renderer", true);
+generateGameslibDocsCatalog(ROOT);
 syncDocs("gameslib", "gameslib", false);
 syncDocs("node-backend", "backend", false);
 syncDocs("recranks", "recranks", false);

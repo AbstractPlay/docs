@@ -7,6 +7,10 @@ const path = require("path");
 
 const ROOT = path.join(__dirname, "..");
 const WARN_ONLY = process.env.DOCS_CHECK_WARN === "1";
+const { generateGameslibDocsCatalog } = require("./gameslib-gen-docs-catalog");
+const { isPublishedDocFile } = require("./nav-utils");
+
+generateGameslibDocsCatalog(ROOT);
 
 let errors = [];
 let warnings = [];
@@ -29,7 +33,7 @@ function resolveRepo(name) {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         const full = path.join(dir, entry.name);
         if (entry.isDirectory()) walk(full);
-        else if (entry.name.endsWith(".md") && !entry.name.startsWith("_")) count++;
+        else if (isPublishedDocFile(entry.name)) count++;
       }
     })(docsRoot);
     return count;
@@ -211,7 +215,7 @@ function collectDocPages(docsRoot, repoPrefix) {
       const full = path.join(dir, entry.name);
       if (entry.isDirectory()) {
         walk(full, rel);
-      } else if (entry.name.endsWith(".md") && !entry.name.startsWith("_")) {
+      } else if (isPublishedDocFile(entry.name)) {
         pages.set(docUrl(repoPrefix, rel), full);
       }
     }

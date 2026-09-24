@@ -1,6 +1,11 @@
 const fs = require("fs");
 const path = require("path");
 
+/** Markdown doc pages published on the site (excludes prose-only sources). */
+function isPublishedDocFile(name) {
+  return name.endsWith(".md") && !name.startsWith("_") && !name.endsWith(".prose.md");
+}
+
 function relPathToSlug(relPath) {
   return relPath
     .replace(/\\/g, "/")
@@ -43,7 +48,7 @@ function collectDocSlugs(docsRoot) {
       const full = path.join(dir, entry.name);
       if (entry.isDirectory()) {
         walk(full, rel);
-      } else if (entry.name.endsWith(".md") && !entry.name.startsWith("_")) {
+      } else if (isPublishedDocFile(entry.name)) {
         const slug = relPathToSlug(rel);
         const content = fs.readFileSync(full, "utf8");
         slugs.set(slug, { filePath: full, title: titleFromMarkdown(content) });
@@ -237,6 +242,7 @@ function validateNavConfig(prefix, configLabel, orderConfig, discoveredSlugs, { 
 }
 
 module.exports = {
+  isPublishedDocFile,
   relPathToSlug,
   slugToUrl,
   urlToSlug,
