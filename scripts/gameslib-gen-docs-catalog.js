@@ -2,7 +2,7 @@
  * Ephemeral gameslib catalog pages (meta-games.md, categories.md) for docs build/check.
  * Source narrative: vendor/gameslib/docs/categories.prose.md
  */
-const { execFileSync, execSync } = require("child_process");
+const { execFileSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
@@ -21,11 +21,27 @@ function resolveGameslibRoot(docsRoot) {
   );
 }
 
-function ensureGameslibDeps(gameslibRoot) {
-  const tsMorph = path.join(gameslibRoot, "node_modules", "ts-morph", "package.json");
-  if (fs.existsSync(tsMorph)) return;
+function catalogDepsRoot(docsRoot) {
+  return path.join(docsRoot, "node_modules", ".cache", "gameslib-catalog");
+}
+
+function ensureGameslibDeps(docsRoot, gameslibRoot) {
+  const installRoot = catalogDepsRoot(docsRoot);
+  const tsMorph = path.join(installRoot, "node_modules", "ts-morph", "package.json");
+  if (fs.existsSync(tsMorph)) {
+    return path.join(installRoot, "node_modules");
+  }
+  const pkg = JSON.parse(fs.readFileSync(path.join(gameslibRoot, "package.json"), "utf8"));
+  const spec = pkg.devDependencies?.["ts-morph"] ?? "^27.0.2";
   console.log("Installing gameslib dependencies (ts-morph) for docs catalog...");
-  execSync("npm ci", { cwd: gameslibRoot, stdio: "inherit" });
+  // Catalog generation only needs ts-morph (public npm). `npm ci` in vendor/gameslib would
+  // install @abstractplay/* from GitHub Packages and fails in docs CI without a gameslib .npmrc.
+  fs.mkdirSync(installRoot, { recursive: true });
+  execFileSync("npm", ["install", `ts-morph@${spec}`, "--ignore-scripts"], {
+    cwd: installRoot,
+    stdio: "inherit",
+  });
+  return path.join(installRoot, "node_modules");
 }
 
 /**
@@ -34,8 +50,11 @@ function ensureGameslibDeps(gameslibRoot) {
 function generateGameslibDocsCatalog(docsRoot) {
   const gameslibRoot = resolveGameslibRoot(docsRoot);
   const script = path.join(gameslibRoot, "scripts", "gen-docs-catalog.mjs");
-  ensureGameslibDeps(gameslibRoot);
-  execFileSync(process.execPath, [script], { cwd: gameslibRoot, stdio: "inherit" });
+  const catalogNodeModules = ensureGameslibDeps(docsRoot, gameslibRoot);
+  const env = { ...process.env };
+  const nodePath = catalogNodeModules;
+  env.NODE_PATH = env.NODE_PATH ? `${nodePath}${path.delimiter}${env.NODE_PATH}` : nodePath;
+  execFileSync(process.execPath, [script], { cwd: gameslibRoot, stdio: "inherit", env });
   console.log("Generated gameslib docs catalog (meta-games.md, categories.md)");
 }
 
